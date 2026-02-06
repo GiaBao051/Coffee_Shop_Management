@@ -1,117 +1,260 @@
-﻿CREATE DATABASE QL_QUANCAFE
-USE QL_QUANCAFE
+﻿CREATE DATABASE QL_QUANCAFE;
+GO
+USE QL_QUANCAFE;
+GO
 
-CREATE TABLE Customers
+/*=========================================== KhachHang ===========================================*/
+CREATE TABLE KhachHang
 (
-	CustomerID CHAR(5) NOT NULL,
-	CustomerName NVARCHAR(50) NOT NULL,
-	Phone VARCHAR(10) NOT NULL,
-	LoyaltyPoints INT NOT NULL,
+    ID_KhachHang INT IDENTITY(1,1) NOT NULL,
+	MaKH AS (
+        CAST(
+            CONCAT('KH', RIGHT(CONCAT('0000', CAST(ID_KhachHang AS VARCHAR(10))), 4))
+            AS CHAR(6)
+        )
+    ) PERSISTED,      -- KH0001
+	TenKH NVARCHAR(50) NOT NULL,
+	SoDienThoai VARCHAR(10) NOT NULL,
+	DiemTichLuy INT NOT NULL,
 
-	-------------------------------RÀNG BUỘC KHÓA BẢNG Customers-------------------------------
+	-------------------------------RÀNG BUỘC KHÓA BẢNG KhachHang-------------------------------
 
-	CONSTRAINT PK_Customers PRIMARY KEY(CustomerID),
+	CONSTRAINT PK_KhachHang PRIMARY KEY(MaKH),
 
-	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG Customers-------------------------------
+	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG KhachHang-------------------------------
 
-	--Check mỗi số điện thoại chỉ thuộc về một khách hàng
-	CONSTRAINT UQ_Customers_Phone UNIQUE (Phone),
+	-- Mỗi số điện thoại chỉ thuộc về một khách hàng
+	CONSTRAINT UQ_KhachHang_SoDienThoai UNIQUE (SoDienThoai),
 
-	--Giá trị mặc định của điểm tích lũy luôn là 0
-	CONSTRAINT DF_Customers_LoyaltyPoints DEFAULT (0) FOR LoyaltyPoints,
+	-- Giá trị mặc định của điểm tích lũy luôn là 0
+	CONSTRAINT DF_KhachHang_DiemTichLuy DEFAULT (0),
 
-	--Điểm tích lũy luôn lớn hơn hoặc bằng 0
-	CONSTRAINT CHK_Customers_LoyaltyPoints CHECK (LoyaltyPoints >= 0),
+	-- Điểm tích lũy luôn lớn hơn hoặc bằng 0
+	CONSTRAINT CHK_KhachHang_DiemTichLuy CHECK (DiemTichLuy >= 0),
 
-	--Fomat CustomerID = KHxxx (VD: KH0001)
-	CONSTRAINT CHK_Customers_CustomerID CHECK (CustomerID LIKE 'KH[0-9][0-9][0-9][0-9]'),
+	-- Format MaKH = KHxxxx (VD: KH0001)
+	CONSTRAINT CHK_KhachHang_MaKH CHECK (MaKH LIKE 'KH[0-9][0-9][0-9][0-9]'),
 
-	--Fomat Phone luôn nhận kí tự số
-	CONSTRAINT CHK_Customers_Phone CHECK (Phone LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
-)
+	-- Format SĐT: chỉ nhận ký tự số và đủ 10 số
+	CONSTRAINT CHK_KhachHang_SoDienThoai CHECK (SoDienThoai LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
+);
+GO
 
-CREATE TABLE Orders
+
+/*=========================================== DonHang ===========================================*/
+CREATE TABLE DonHang
 (
-	OrderID CHAR(5) NOT NULL,
-	BranchID CHAR(5) NOT NULL,
-	EmployeeID CHAR(5) NOT NULL,
-	CustomerID CHAR(5) NOT NULL,
-	TotalAmount DECIMAL NOT NULL,
-	Discount DECIMAL NOT NULL,
-	PaymentMethod NVARCHAR(50) NOT NULL,
-	CreateAt DATETIME NOT NULL,
+    ID_DonHang INT IDENTITY(1,1) NOT NULL,
+	MaDH AS (
+        CAST(
+            CONCAT('DH', RIGHT(CONCAT('0000', CAST(ID_DonHang AS VARCHAR(10))), 4))
+            AS CHAR(6)
+        )
+    ) PERSISTED,                -- DH0001
+	MaChiNhanh CHAR(5) NOT NULL,
+	MaNhanVien CHAR(5) NOT NULL,
+	MaKH CHAR(6) NOT NULL,
+	TongTien DECIMAL(18,2) NOT NULL,       -- Tổng tiền từ chi tiết đơn
+	GiamGia DECIMAL(18,2) NOT NULL,        -- Giảm giá (mô hình: đổi điểm)
+	PhuongThucThanhToan NVARCHAR(50) NOT NULL,
+	NgayTao DATETIME2(0) NOT NULL,
 
-	-------------------------------RÀNG BUỘC KHÓA BẢNG Orders-------------------------------
+	-------------------------------RÀNG BUỘC KHÓA BẢNG DonHang-------------------------------
 
-	CONSTRAINT PK_Orders PRIMARY KEY(OrderID),
-	CONSTRAINT FK_Orders_Branches FOREIGN KEY(BranchID) REFERENCES Branches(BranchID),
-	CONSTRAINT FK_Orders_Employees FOREIGN KEY(EmployeeID) REFERENCES Employees(EmployeeID),
-	CONSTRAINT FK_Orders_Customers FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
+	CONSTRAINT PK_DonHang PRIMARY KEY(MaDH),
+	CONSTRAINT FK_DonHang_ChiNhanh FOREIGN KEY(MaChiNhanh) REFERENCES Branches(BranchID),
+	CONSTRAINT FK_DonHang_NhanVien FOREIGN KEY(MaNhanVien) REFERENCES Employees(EmployeeID),
+	CONSTRAINT FK_DonHang_KhachHang FOREIGN KEY(MaKH) REFERENCES KhachHang(MaKH),
 
-	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG Orders-------------------------------
+	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG DonHang-------------------------------
 
-	--Giá trị mặc định của thành tiền luôn là 0
-	CONSTRAINT DF_Orders_TotalAmount DEFAULT (0) FOR TotalAmount,
+	-- Giá trị mặc định của tổng tiền luôn là 0
+	CONSTRAINT DF_DonHang_TongTien DEFAULT (0),
 
-	--Giá trị mặc định của giảm giá luôn là 0
-    CONSTRAINT DF_Orders_Discount    DEFAULT (0) FOR Discount,
+	-- Giá trị mặc định của giảm giá luôn là 0
+    CONSTRAINT DF_DonHang_GiamGia DEFAULT (0),
 
-	--Gía trị mặc định của ngày và giờ khi tạo đơn hàng luôn là ngày và giờ lúc thực hiện giao dịch
-    CONSTRAINT DF_Orders_CreateAt DEFAULT (SYSDATETIME()) FOR CreateAt,
+	-- Giá trị mặc định của ngày giờ tạo đơn là thời điểm hiện tại
+    CONSTRAINT DF_DonHang_NgayTao DEFAULT (SYSDATETIME()),
 
-	--Phương thức thanh toán mặc định luôn là "Tiền mặt"
-    CONSTRAINT DF_Orders_PaymentMethod DEFAULT (N'Tiền mặt') FOR PaymentMethod,
+	-- Phương thức thanh toán mặc định là "Tiền mặt"
+    CONSTRAINT DF_DonHang_PhuongThucThanhToan DEFAULT (N'Tiền mặt'),
 
-	--Mã đơn hàng phải bắt đầu từ DHxxx (VD: DH0001)
-	CONSTRAINT CK_Orders_OrderID CHECK (OrderID LIKE 'DH[0-9][0-9][0-9][0-9]'),
+	-- Format MaDH = DHxxxx (VD: DH0001)
+	CONSTRAINT CHK_DonHang_MaDH CHECK (MaDH LIKE 'DH[0-9][0-9][0-9][0-9]'),
 
-	--Thành tiền phải lớn hơn hoặc bằng 0
-    CONSTRAINT CHK_Orders_TotalAmount CHECK (TotalAmount >= 0),
+	-- Tổng tiền phải >= 0
+    CONSTRAINT CHK_DonHang_TongTien CHECK (TongTien >= 0),
 
-	--Giảm giá phải lớn hơn hoặc bàng 0 và vé hơn hoặc bằng thành tiền
-    CONSTRAINT CHK_Orders_Discount CHECK (Discount >= 0 AND Discount <= TotalAmount),
+	-- Giảm giá phải >= 0 và <= Tổng tiền
+    CONSTRAINT CHK_DonHang_GiamGia CHECK (GiamGia >= 0 AND GiamGia <= TongTien),
 
-	--Ngày và giờ khi tạo đơn hàng luôn bé hơn hoặc bằng ngày và giờ hiện tại
-    CONSTRAINT CHK_Orders_CreateAt CHECK (CreateAt <= GETDATE()),
+	-- Ngày tạo <= thời điểm hiện tại
+    CONSTRAINT CHK_DonHang_NgayTao CHECK (NgayTao <= SYSDATETIME()),
 
-	--Phương thức thanh toán chỉ được nhận một trong các phương thức sau
-    CONSTRAINT CHK_Orders_PaymentMethod
-	CHECK (PaymentMethod IN (N'Tiền mặt', N'Thẻ', N'Chuyển khoản', N'QR', N'Ví điện tử'))
+	-- Chỉ nhận 1 trong các phương thức sau
+    CONSTRAINT CHK_DonHang_PhuongThucThanhToan
+	CHECK (PhuongThucThanhToan IN (N'Tiền mặt', N'Thẻ', N'Chuyển khoản', N'QR', N'Ví điện tử')),
 
-)
+	-- Giảm giá tối đa 50% giá trị đơn: GiamGia <= 50% TongTien
+	CONSTRAINT CHK_DonHang_GiamGia_ToiDa50PhanTram CHECK (GiamGia * 2 <= TongTien)
+);
+GO
 
-CREATE TABLE OrderDetails
+
+/*=========================================== ChiTietDonHang ===========================================*/
+CREATE TABLE ChiTietDonHang
 (
-	DetailID CHAR(5) NOT NULL,
-	OrderID CHAR(5) NOT NULL, 
-	VariantID CHAR(5) NOT NULL,
-	Quantity INT NOT NULL,
-	UnitPrice MONEY NOT NULL,
+    ID_ChiTietDonHang INT IDENTITY(1,1) NOT NULL,
+	MaCTDH AS (
+        CAST(
+            CONCAT('CTDH', RIGHT(CONCAT('0000', CAST(ID_ChiTietDonHang AS VARCHAR(10))), 4))
+            AS CHAR(8)
+        )
+    ) PERSISTED,               -- CTDH0001 (8 ký tự)
+	MaDH CHAR(6) NOT NULL,
+	MaBienThe CHAR(5) NOT NULL,
+	SoLuong INT NOT NULL,
+	DonGia MONEY NOT NULL,
 
-	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG OrderDetails-------------------------------
+	-------------------------------RÀNG BUỘC KHÓA BẢNG ChiTietDonHang-------------------------------
 
-	CONSTRAINT PK_OrderDetails PRIMARY KEY(DetailID),
-	CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY(OrderID) REFERENCES Orders(OrderID),
-	CONSTRAINT FK_OrderDetails_ProductVariants FOREIGN KEY(VariantID) REFERENCES ProductVariants(VariantID),
+	CONSTRAINT PK_ChiTietDonHang PRIMARY KEY(MaCTDH),
+	CONSTRAINT FK_ChiTietDonHang_DonHang FOREIGN KEY(MaDH) REFERENCES DonHang(MaDH),
+	CONSTRAINT FK_ChiTietDonHang_BienThe FOREIGN KEY(MaBienThe) REFERENCES BienTheSanPham(MaBienThe),
 
-	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG OrderDetails-------------------------------
+	-------------------------------RÀNG BUỘC GIÁ TRỊ BẢNG ChiTietDonHang-------------------------------
 
-	--Một đơn hàng không được có 2 dòng cùng Variant
-    CONSTRAINT UQ_OrderDetails_Order_Variant UNIQUE (OrderID, VariantID),
+	-- Một đơn hàng không được có 2 dòng cùng biến thể
+    CONSTRAINT UQ_ChiTietDonHang_MaDH_MaBienThe UNIQUE (MaDH, MaBienThe),
 
-	--Số lượng mặc định của một Product luôn là 1
-	CONSTRAINT DF_OrderDetails_Quantity DEFAULT (1) FOR Quantity,
+	-- Số lượng mặc định là 1
+	CONSTRAINT DF_ChiTietDonHang_SoLuong DEFAULT (1),
 
-	--Mã chi tiết đơn hàng luôn bắt đầu bằng CTDHxxxx (VD: CDH0001)
-	CONSTRAINT CHK_OrderDetails_DetailID CHECK (DetailID LIKE 'D[0-9][0-9][0-9][0-9]'),
+	-- Format MaCTDH = CTDHxxxx (VD: CTDH0001)
+	CONSTRAINT CHK_ChiTietDonHang_MaCTDH CHECK (MaCTDH LIKE 'CTDH[0-9][0-9][0-9][0-9]'),
 
-	--Số lượng luôn lớn hơn 0
-    CONSTRAINT CHK_OrderDetails_Quantity CHECK (Quantity > 0),
+	-- Số lượng > 0
+    CONSTRAINT CHK_ChiTietDonHang_SoLuong CHECK (SoLuong > 0),
 
-	--Đơn giá luôn lớn hơn hoặc bằng 0
-    CONSTRAINT CHK_OrderDetails_UnitPrice CHECK (UnitPrice >= 0)
-)
+	-- Đơn giá >= 0
+    CONSTRAINT CHK_ChiTietDonHang_DonGia CHECK (DonGia >= 0)
+);
+GO
 
-	-------------------------------TRIGGER-------------------------------
 
-	--Tự động cập nhật 
+/*=========================================== TRIGGER ===========================================*/
+
+-- Tự động cập nhật TongTien của DonHang khi thêm/sửa/xóa ChiTietDonHang
+CREATE TRIGGER TR_ChiTietDonHang_CapNhatTongTien
+ON ChiTietDonHang
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH DonHangBiAnhHuong AS
+    (
+        SELECT MaDH FROM inserted
+        UNION
+        SELECT MaDH FROM deleted
+    ),
+    TongTienMoi AS
+    (
+        SELECT CT.MaDH,
+               SUM(CAST(CT.SoLuong AS DECIMAL(18,2)) * CAST(CT.DonGia AS DECIMAL(18,2))) AS TongTien
+        FROM ChiTietDonHang CT
+        JOIN DonHangBiAnhHuong DH ON DH.MaDH = CT.MaDH
+        GROUP BY CT.MaDH
+    )
+    UPDATE DH
+    SET DH.TongTien = ISNULL(TT.TongTien, 0)
+    FROM DonHang DH
+    LEFT JOIN TongTienMoi TT ON TT.MaDH = DH.MaDH
+    WHERE DH.MaDH IN (SELECT MaDH FROM DonHangBiAnhHuong);
+
+    -- Nếu sau khi tính lại mà GiamGia > TongTien thì báo lỗi
+    IF EXISTS
+    (
+        SELECT 1
+        FROM DonHang DH
+        WHERE DH.MaDH IN (SELECT MaDH FROM inserted UNION SELECT MaDH FROM deleted)
+          AND DH.GiamGia > DH.TongTien
+    )
+    BEGIN
+        THROW 52001, N'Giảm giá đang lớn hơn tổng tiền sau khi cập nhật chi tiết đơn hàng.', 1;
+    END
+END;
+GO
+
+--  + Điểm cộng: FLOOR((TongTien - GiamGia) / 10000)
+--  + Điểm đã dùng: GiamGia/1000  (GiamGia phải là bội 1000)
+--  + Điểm thay đổi = (điểm mới - điểm dùng mới) - (điểm cũ - điểm dùng cũ)
+CREATE TRIGGER TR_DonHang_CapNhatDiemTichLuy
+ON DonHang
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    --1 điểm = 1000đ
+    IF EXISTS (
+        SELECT 1
+        FROM inserted
+        WHERE NOT (
+            GiamGia = CONVERT(DECIMAL(18,2), CONVERT(INT, GiamGia)))
+        OR NOT (
+            (CONVERT(INT, GiamGia) % 1000) = 0)
+    )
+    BEGIN
+        PRINT(N'Giảm giá phải là bội số của 1000 (1 điểm = 1000).')
+    END;
+
+    -- GiamGia tối đa 50% TongTien
+    IF EXISTS (SELECT 1 FROM inserted WHERE GiamGia * 2 > TongTien)
+    BEGIN
+        PRINT(N'Giảm giá (đổi điểm) không được vượt quá 50% giá trị đơn hàng.')
+    END;
+
+    ;WITH TinhCu AS
+    (
+        SELECT  MaKH,
+                SUM(CONVERT(INT, FLOOR((TongTien - GiamGia) / 10000.0))) AS DiemCong,
+                SUM(CONVERT(INT, GiamGia / 1000.0)) AS DiemDung
+        FROM deleted
+        GROUP BY MaKH
+    ),
+    TinhMoi AS
+    (
+        SELECT  MaKH,
+                SUM(CONVERT(INT, FLOOR((TongTien - GiamGia) / 10000.0))) AS DiemCong,
+                SUM(CONVERT(INT, GiamGia / 1000.0)) AS DiemDung
+        FROM inserted
+        GROUP BY MaKH
+    ),
+    ChenhLech AS
+    (
+        -- Trừ theo trạng thái cũ
+        SELECT MaKH, (0 - DiemCong + DiemDung) AS DiemThayDoi FROM TinhCu
+        UNION ALL
+        -- Cộng theo trạng thái mới
+        SELECT MaKH, (DiemCong - DiemDung) AS DiemThayDoi FROM TinhMoi
+    ),
+    TongChenhLech AS
+    (
+        SELECT MaKH, SUM(DiemThayDoi) AS DiemThayDoi
+        FROM ChenhLech
+        WHERE MaKH IS NOT NULL
+        GROUP BY MaKH
+    )
+    UPDATE KH
+    SET KH.DiemTichLuy = KH.DiemTichLuy + TL.DiemThayDoi
+    FROM KhachHang KH
+    JOIN TongChenhLech TL ON TL.MaKH = KH.MaKH;
+
+    IF EXISTS (SELECT 1 FROM KhachHang WHERE DiemTichLuy < 0)
+    BEGIN
+        PRINT(N'Điểm tích lũy bị âm sau khi cập nhật đơn hàng. Kiểm tra giảm giá/điểm khách.')
+    END
+END;
+GO
+
+
