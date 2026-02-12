@@ -200,6 +200,52 @@ const UserManager = {
 
     return { success: true, message: "Đổi mật khẩu thành công!" };
   },
+
+  /**
+   * Đăng nhập/Đăng ký bằng Google (Firebase Auth)
+   * Nếu email đã tồn tại trong localStorage → đăng nhập luôn
+   * Nếu chưa → tạo tài khoản mới từ thông tin Google
+   * @param {Object} googleUser - { displayName, email, photoURL, uid }
+   * @returns {Object} { success, message, user, isNew }
+   */
+  loginWithGoogle(googleUser) {
+    const users = this.getUsers();
+    let user = users.find((u) => u.email === googleUser.email);
+
+    if (user) {
+      // Đã có tài khoản → đăng nhập
+      user.googleUid = googleUser.uid;
+      user.photoURL = googleUser.photoURL || user.photoURL;
+      this.saveUsers(users);
+      this.setCurrentUser(user);
+      return { success: true, message: "Đăng nhập thành công!", user, isNew: false };
+    }
+
+    // Chưa có → tạo mới
+    const nameParts = (googleUser.displayName || "Google User").trim().split(" ");
+    const firstName = nameParts.pop();
+    const lastName = nameParts.join(" ");
+
+    const newUser = {
+      id: Date.now(),
+      lastName: lastName,
+      firstName: firstName,
+      displayName: googleUser.displayName || "Google User",
+      email: googleUser.email,
+      phone: "",
+      password: "",
+      googleUid: googleUser.uid,
+      photoURL: googleUser.photoURL || "",
+      provider: "google",
+      createdAt: new Date().toISOString(),
+    };
+
+    users.push(newUser);
+    this.saveUsers(users);
+    this.setCurrentUser(newUser);
+
+    return { success: true, message: "Đăng ký thành công!", user: newUser, isNew: true };
+  },
 };
 
 /**
