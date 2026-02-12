@@ -191,14 +191,17 @@ function selectPayment(method) {
     // Hiện QR thanh toán
     if (bankInfo) bankInfo.style.display = "block";
     // Đổi text nút thành "XÁC NHẬN ĐÃ THANH TOÁN"
-    if (btnPlace) btnPlace.innerHTML = '<i class="fa-solid fa-credit-card"></i> XÁC NHẬN ĐÃ THANH TOÁN';
+    if (btnPlace)
+      btnPlace.innerHTML =
+        '<i class="fa-solid fa-credit-card"></i> XÁC NHẬN ĐÃ THANH TOÁN';
     // Cập nhật QR code với số tiền hiện tại
     updateQRCode();
   } else {
     // Ẩn QR thanh toán khi chọn COD
     if (bankInfo) bankInfo.style.display = "none";
     // Đổi text nút về "ĐẶT HÀNG"
-    if (btnPlace) btnPlace.innerHTML = '<i class="fa-solid fa-check"></i> ĐẶT HÀNG';
+    if (btnPlace)
+      btnPlace.innerHTML = '<i class="fa-solid fa-check"></i> ĐẶT HÀNG';
   }
 }
 
@@ -528,7 +531,7 @@ async function placeOrder() {
   }
 
   const validationResult = validateForm();
-  
+
   // Nếu cần xác nhận thanh toán (chọn Banking)
   if (validationResult === "NEED_CONFIRM") {
     const confirmed = await showConfirmPayment();
@@ -547,7 +550,11 @@ async function placeOrder() {
   if (orderCodeEl) orderCodeEl.textContent = code;
 
   // Lưu đơn hàng vào lịch sử (nếu đã đăng nhập)
-  if (typeof OrderManager !== "undefined" && typeof UserManager !== "undefined" && UserManager.isLoggedIn()) {
+  if (
+    typeof OrderManager !== "undefined" &&
+    typeof UserManager !== "undefined" &&
+    UserManager.isLoggedIn()
+  ) {
     const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
     // Lấy thông tin người đặt hàng từ form
     const ckNameEl = document.getElementById("ckName");
@@ -571,7 +578,10 @@ async function placeOrder() {
         ice: i.ice,
       })),
       total: subtotal,
-      payment: selectedPayment === "banking" ? "Chuyển khoản" : "Thanh toán khi nhận hàng",
+      payment:
+        selectedPayment === "banking"
+          ? "Chuyển khoản"
+          : "Thanh toán khi nhận hàng",
       shipping: selectedShipping === "delivery" ? "Giao hàng" : "Uống tại quán",
     });
   }
@@ -987,6 +997,19 @@ function closeSuccess() {
 document.addEventListener("DOMContentLoaded", () => {
   updateCartCount();
   renderOrderSummary();
+
+  // ===== ĐIỀN SẴN THÔNG TIN NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP =====
+  // CODE BỞI TRẦN DƯƠNG GIA BẢO
+  if (typeof UserManager !== "undefined" && UserManager.isLoggedIn()) {
+    const user = UserManager.getCurrentUser();
+    const ckName = document.getElementById("ckName");
+    const ckPhone = document.getElementById("ckPhone");
+    const ckEmail = document.getElementById("ckEmail");
+    if (ckName && user.displayName) ckName.value = user.displayName;
+    if (ckPhone && user.phone) ckPhone.value = user.phone;
+    if (ckEmail && user.email) ckEmail.value = user.email;
+  }
+  // KẾT THÚC CODE BỞI TRẦN DƯƠNG GIA BẢO
 
   // Nút áp dụng mã giảm giá
   const btnCoupon = document.querySelector(".btn-coupon");
