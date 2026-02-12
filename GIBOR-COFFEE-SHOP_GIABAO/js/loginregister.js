@@ -48,7 +48,7 @@ if (loginForm) {
         type: "error",
         title: "Thiếu thông tin",
         message: "Vui lòng nhập đầy đủ email và mật khẩu.",
-        confirmText: "Đã hiểu"
+        confirmText: "Đã hiểu",
       });
       return;
     }
@@ -59,16 +59,21 @@ if (loginForm) {
       showGiborPopup({
         type: "success",
         title: "Đăng nhập thành công!",
-        message: "Chào mừng " + result.user.displayName + " quay trở lại GIBOR Coffee!",
+        message:
+          "Chào mừng " +
+          result.user.displayName +
+          " quay trở lại GIBOR Coffee!",
         confirmText: "Tiếp tục",
-        onConfirm: () => { redirectAfterLogin(); }
+        onConfirm: () => {
+          redirectAfterLogin();
+        },
       });
     } else {
       showGiborPopup({
         type: "error",
         title: "Đăng nhập thất bại",
         message: result.message,
-        confirmText: "Thử lại"
+        confirmText: "Thử lại",
       });
     }
   });
@@ -95,7 +100,7 @@ if (registerForm) {
         type: "error",
         title: "Thiếu thông tin",
         message: "Vui lòng nhập đầy đủ thông tin đăng ký.",
-        confirmText: "Đã hiểu"
+        confirmText: "Đã hiểu",
       });
       return;
     }
@@ -112,16 +117,19 @@ if (registerForm) {
       showGiborPopup({
         type: "success",
         title: "Đăng ký thành công!",
-        message: "Chào mừng " + result.user.displayName + " đến với GIBOR Coffee!",
+        message:
+          "Chào mừng " + result.user.displayName + " đến với GIBOR Coffee!",
         confirmText: "Bắt đầu khám phá",
-        onConfirm: () => { redirectAfterLogin(); }
+        onConfirm: () => {
+          redirectAfterLogin();
+        },
       });
     } else {
       showGiborPopup({
         type: "error",
         title: "Đăng ký thất bại",
         message: result.message,
-        confirmText: "Thử lại"
+        confirmText: "Thử lại",
       });
     }
   });
