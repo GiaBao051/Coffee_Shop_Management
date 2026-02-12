@@ -998,6 +998,19 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartCount();
   renderOrderSummary();
 
+  // ===== ĐIỀN SẴN THÔNG TIN NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP =====
+  // CODE BỞI TRẦN DƯƠNG GIA BẢO
+  if (typeof UserManager !== "undefined" && UserManager.isLoggedIn()) {
+    const user = UserManager.getCurrentUser();
+    const ckName = document.getElementById("ckName");
+    const ckPhone = document.getElementById("ckPhone");
+    const ckEmail = document.getElementById("ckEmail");
+    if (ckName && user.displayName) ckName.value = user.displayName;
+    if (ckPhone && user.phone) ckPhone.value = user.phone;
+    if (ckEmail && user.email) ckEmail.value = user.email;
+  }
+  // KẾT THÚC CODE BỞI TRẦN DƯƠNG GIA BẢO
+
   // Nút áp dụng mã giảm giá
   const btnCoupon = document.querySelector(".btn-coupon");
   if (btnCoupon) btnCoupon.addEventListener("click", applyCoupon);

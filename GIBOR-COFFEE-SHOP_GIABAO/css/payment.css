@@ -730,10 +730,18 @@ body.dark {
   padding: 0;
 }
 
+body.dark .confirm-popup h3 {
+  color: var(--accent, #d4a373);
+}
+
 .confirm-popup p {
   color: var(--text);
   line-height: 1.6;
   margin-bottom: 8px;
+}
+
+body.dark .confirm-popup p {
+  color: #e0e0e0;
 }
 
 .confirm-actions {
@@ -821,10 +829,18 @@ body.dark {
   margin-bottom: 12px;
 }
 
+body.dark .success-box h3 {
+  color: var(--accent, #d4a373);
+}
+
 .success-box p {
   font-size: 14px;
   margin-bottom: 6px;
   opacity: 0.8;
+}
+
+body.dark .success-box p {
+  color: #e0e0e0;
 }
 
 .order-code {
@@ -869,6 +885,10 @@ body.dark {
   background: transparent;
   border: 2px solid var(--accent);
   color: var(--primary);
+}
+
+body.dark .btn-success-home {
+  color: #e0e0e0;
 }
 
 .btn-success-home:hover {

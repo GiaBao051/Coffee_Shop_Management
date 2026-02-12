@@ -138,6 +138,68 @@ const UserManager = {
   isLoggedIn() {
     return this.getCurrentUser() !== null;
   },
+
+  /**
+   * Cập nhật thông tin cá nhân (họ, tên, email, sđt)
+   * @param {Object} updates - { lastName, firstName, email, phone }
+   * @returns {Object} { success, message }
+   */
+  updateProfile(updates) {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) return { success: false, message: "Chưa đăng nhập." };
+
+    const users = this.getUsers();
+    const idx = users.findIndex((u) => u.id === currentUser.id);
+    if (idx === -1) return { success: false, message: "Không tìm thấy tài khoản." };
+
+    // Nếu đổi email → kiểm tra email mới chưa ai dùng
+    if (updates.email && updates.email !== users[idx].email) {
+      if (users.find((u) => u.email === updates.email && u.id !== currentUser.id)) {
+        return { success: false, message: "Email mới đã được dùng bởi tài khoản khác." };
+      }
+    }
+
+    // Cập nhật các trường
+    if (updates.lastName !== undefined) users[idx].lastName = updates.lastName;
+    if (updates.firstName !== undefined) users[idx].firstName = updates.firstName;
+    if (updates.email !== undefined) users[idx].email = updates.email;
+    if (updates.phone !== undefined) users[idx].phone = updates.phone;
+    users[idx].displayName = (users[idx].lastName + " " + users[idx].firstName).trim();
+
+    this.saveUsers(users);
+    this.setCurrentUser(users[idx]);
+
+    return { success: true, message: "Cập nhật thông tin thành công!", user: users[idx] };
+  },
+
+  /**
+   * Đổi mật khẩu
+   * @param {string} oldPassword - Mật khẩu cũ
+   * @param {string} newPassword - Mật khẩu mới
+   * @returns {Object} { success, message }
+   */
+  updatePassword(oldPassword, newPassword) {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) return { success: false, message: "Chưa đăng nhập." };
+
+    const users = this.getUsers();
+    const idx = users.findIndex((u) => u.id === currentUser.id);
+    if (idx === -1) return { success: false, message: "Không tìm thấy tài khoản." };
+
+    // Xác minh mật khẩu cũ
+    if (users[idx].password !== oldPassword) {
+      return { success: false, message: "Mật khẩu cũ không đúng." };
+    }
+
+    if (newPassword.length < 6) {
+      return { success: false, message: "Mật khẩu mới phải có ít nhất 6 ký tự." };
+    }
+
+    users[idx].password = newPassword;
+    this.saveUsers(users);
+
+    return { success: true, message: "Đổi mật khẩu thành công!" };
+  },
 };
 
 /**
