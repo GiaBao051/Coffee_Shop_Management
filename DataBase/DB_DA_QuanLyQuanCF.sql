@@ -1,6 +1,6 @@
-﻿-- Đồ án quản lý chuỗi cửa hàng cà phê --
+-- Đồ án quản lý chuỗi cửa hàng cà phê --
 
--- Tạo cơ sở dữ liệu --
+-- Tạo cơ sở dữ liệu ---
 CREATE DATABASE QuanLyChuoiCaPhe
 ON PRIMARY
 (
