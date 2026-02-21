@@ -150,26 +150,41 @@ const UserManager = {
 
     const users = this.getUsers();
     const idx = users.findIndex((u) => u.id === currentUser.id);
-    if (idx === -1) return { success: false, message: "Không tìm thấy tài khoản." };
+    if (idx === -1)
+      return { success: false, message: "Không tìm thấy tài khoản." };
 
     // Nếu đổi email → kiểm tra email mới chưa ai dùng
     if (updates.email && updates.email !== users[idx].email) {
-      if (users.find((u) => u.email === updates.email && u.id !== currentUser.id)) {
-        return { success: false, message: "Email mới đã được dùng bởi tài khoản khác." };
+      if (
+        users.find((u) => u.email === updates.email && u.id !== currentUser.id)
+      ) {
+        return {
+          success: false,
+          message: "Email mới đã được dùng bởi tài khoản khác.",
+        };
       }
     }
 
     // Cập nhật các trường
     if (updates.lastName !== undefined) users[idx].lastName = updates.lastName;
-    if (updates.firstName !== undefined) users[idx].firstName = updates.firstName;
+    if (updates.firstName !== undefined)
+      users[idx].firstName = updates.firstName;
     if (updates.email !== undefined) users[idx].email = updates.email;
     if (updates.phone !== undefined) users[idx].phone = updates.phone;
-    users[idx].displayName = (users[idx].lastName + " " + users[idx].firstName).trim();
+    users[idx].displayName = (
+      users[idx].lastName +
+      " " +
+      users[idx].firstName
+    ).trim();
 
     this.saveUsers(users);
     this.setCurrentUser(users[idx]);
 
-    return { success: true, message: "Cập nhật thông tin thành công!", user: users[idx] };
+    return {
+      success: true,
+      message: "Cập nhật thông tin thành công!",
+      user: users[idx],
+    };
   },
 
   /**
@@ -184,7 +199,8 @@ const UserManager = {
 
     const users = this.getUsers();
     const idx = users.findIndex((u) => u.id === currentUser.id);
-    if (idx === -1) return { success: false, message: "Không tìm thấy tài khoản." };
+    if (idx === -1)
+      return { success: false, message: "Không tìm thấy tài khoản." };
 
     // Xác minh mật khẩu cũ
     if (users[idx].password !== oldPassword) {
@@ -192,7 +208,10 @@ const UserManager = {
     }
 
     if (newPassword.length < 6) {
-      return { success: false, message: "Mật khẩu mới phải có ít nhất 6 ký tự." };
+      return {
+        success: false,
+        message: "Mật khẩu mới phải có ít nhất 6 ký tự.",
+      };
     }
 
     users[idx].password = newPassword;
@@ -218,11 +237,18 @@ const UserManager = {
       user.photoURL = googleUser.photoURL || user.photoURL;
       this.saveUsers(users);
       this.setCurrentUser(user);
-      return { success: true, message: "Đăng nhập thành công!", user, isNew: false };
+      return {
+        success: true,
+        message: "Đăng nhập thành công!",
+        user,
+        isNew: false,
+      };
     }
 
     // Chưa có → tạo mới
-    const nameParts = (googleUser.displayName || "Google User").trim().split(" ");
+    const nameParts = (googleUser.displayName || "Google User")
+      .trim()
+      .split(" ");
     const firstName = nameParts.pop();
     const lastName = nameParts.join(" ");
 
@@ -244,7 +270,12 @@ const UserManager = {
     this.saveUsers(users);
     this.setCurrentUser(newUser);
 
-    return { success: true, message: "Đăng ký thành công!", user: newUser, isNew: true };
+    return {
+      success: true,
+      message: "Đăng ký thành công!",
+      user: newUser,
+      isNew: true,
+    };
   },
 };
 

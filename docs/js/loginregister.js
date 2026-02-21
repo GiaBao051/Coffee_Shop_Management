@@ -189,12 +189,18 @@ function handleGoogleSignIn() {
 
       if (loginResult.success) {
         const welcomeMsg = loginResult.isNew
-          ? "Chào mừng " + loginResult.user.displayName + " đến với GIBOR Coffee!"
-          : "Chào mừng " + loginResult.user.displayName + " quay trở lại GIBOR Coffee!";
+          ? "Chào mừng " +
+            loginResult.user.displayName +
+            " đến với GIBOR Coffee!"
+          : "Chào mừng " +
+            loginResult.user.displayName +
+            " quay trở lại GIBOR Coffee!";
 
         showGiborPopup({
           type: "success",
-          title: loginResult.isNew ? "Đăng ký thành công!" : "Đăng nhập thành công!",
+          title: loginResult.isNew
+            ? "Đăng ký thành công!"
+            : "Đăng nhập thành công!",
           message: welcomeMsg,
           confirmText: loginResult.isNew ? "Bắt đầu khám phá" : "Tiếp tục",
           onConfirm: () => {
@@ -207,14 +213,19 @@ function handleGoogleSignIn() {
       console.error("Google Sign-In error:", error);
 
       // Nếu user đóng popup → không hiện lỗi
-      if (error.code === "auth/popup-closed-by-user" || error.code === "auth/cancelled-popup-request") {
+      if (
+        error.code === "auth/popup-closed-by-user" ||
+        error.code === "auth/cancelled-popup-request"
+      ) {
         return;
       }
 
       let errorMsg = "Không thể đăng nhập bằng Google. Vui lòng thử lại.";
       if (error.code === "auth/network-request-failed") {
         errorMsg = "Lỗi kết nối mạng. Vui lòng kiểm tra internet và thử lại.";
-      } else if (error.code === "auth/account-exists-with-different-credential") {
+      } else if (
+        error.code === "auth/account-exists-with-different-credential"
+      ) {
         errorMsg = "Email này đã được liên kết với phương thức đăng nhập khác.";
       }
 

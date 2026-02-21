@@ -66,7 +66,7 @@ function renderOrderSummary() {
         </div>
         <div class="order-item-info">
           <div class="order-item-name">${item.name}</div>
-          <div class="order-item-meta">Size ${item.size}${item.sugar ? " | Đường " + item.sugar : ""}${item.ice ? " | Đá " + item.ice : ""}</div>
+          <div class="order-item-meta">${item.size === "Mặc định" ? "" : "Size " + item.size}${item.sugar ? " | Đường " + item.sugar : ""}${item.ice ? " | Đá " + item.ice : ""}</div>
         </div>
         <div class="order-item-price">${formatPrice(total)}</div>
       </div>`;
@@ -190,10 +190,10 @@ function selectPayment(method) {
   if (method === "banking") {
     // Hiện QR thanh toán
     if (bankInfo) bankInfo.style.display = "block";
-    // Đổi text nút thành "XÁC NHẬN ĐÃ THANH TOÁN"
+    // Đổi text nút thành "ĐẶ HÀNG"
     if (btnPlace)
       btnPlace.innerHTML =
-        '<i class="fa-solid fa-credit-card"></i> XÁC NHẬN ĐÃ THANH TOÁN';
+        '<i class="fa-solid fa-credit-card"></i> ĐẶT HÀNG';
     // Cập nhật QR code với số tiền hiện tại
     updateQRCode();
   } else {
@@ -561,13 +561,28 @@ async function placeOrder() {
     const ckPhoneEl = document.getElementById("ckPhone");
     const ckEmailEl = document.getElementById("ckEmail");
     const ckAddressEl = document.getElementById("ckAddress");
+    const ckCityEl = document.getElementById("ckCity");
+    const ckWardEl = document.getElementById("ckWard");
+
+    // Ghép địa chỉ đầy đủ: số nhà + phường/xã + tỉnh/thành phố
+    let fullAddress = "";
+    if (selectedShipping === "delivery") {
+      const streetAddr = ckAddressEl ? ckAddressEl.value.trim() : "";
+      const wardName = ckWardEl ? ckWardEl.options[ckWardEl.selectedIndex]?.text : "";
+      const cityName = ckCityEl ? ckCityEl.options[ckCityEl.selectedIndex]?.text : "";
+      const parts = [streetAddr, wardName, cityName].filter(
+        (p) => p && p !== "--- Chọn ---"
+      );
+      fullAddress = parts.join(", ");
+    }
+
     OrderManager.saveOrder({
       code: code,
       customer: {
         name: ckNameEl ? ckNameEl.value.trim() : "",
         phone: ckPhoneEl ? ckPhoneEl.value.trim() : "",
         email: ckEmailEl ? ckEmailEl.value.trim() : "",
-        address: ckAddressEl ? ckAddressEl.value.trim() : "",
+        address: fullAddress,
       },
       items: cart.map((i) => ({
         name: i.name,
@@ -583,6 +598,9 @@ async function placeOrder() {
           ? "Chuyển khoản"
           : "Thanh toán khi nhận hàng",
       shipping: selectedShipping === "delivery" ? "Giao hàng" : "Uống tại quán",
+      branch: selectedBranch
+        ? { name: selectedBranch.name, address: selectedBranch.address }
+        : null,
     });
   }
 
@@ -1091,7 +1109,7 @@ const CONFIG = {
   BANK_ID: "MB", // Ngân hàng MB Bank
   ACC_NO: "398383979",
   ACC_NAME: "TRAN GIA BAO",
-  TEMPLATE: "compact2", // 'compact', 'compact2', hoặc 'qr_only'
+  TEMPLATE: "qr_only", // 'compact', 'compact2', hoặc 'qr_only'
 };
 
 // Hàm updateQRCode() - Cập nhật mã QR thanh toán với số tiền hiện tại

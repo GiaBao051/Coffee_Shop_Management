@@ -166,13 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
       // Nút tài khoản của tôi → hiện popup quản lý tài khoản
-      document
-        .getElementById("btnMyAccount")
-        .addEventListener("click", (e) => {
-          e.preventDefault();
-          dropdownOverlay.classList.remove("show");
-          showProfilePopup();
-        });
+      document.getElementById("btnMyAccount").addEventListener("click", (e) => {
+        e.preventDefault();
+        dropdownOverlay.classList.remove("show");
+        showProfilePopup();
+      });
     }
     // Nếu chưa đăng nhập → giữ nguyên link "Đăng nhập"
   }
@@ -200,8 +198,9 @@ let selectedSize = "";
 let selectedPrice = 0;
 let selectedSugar = "50%";
 let selectedIce = "100%";
+let currentCategory = "drink"; // 'drink', 'food', 'topping'
 
-function openPopup(name, img, basePrice) {
+function openPopup(name, img, basePrice, category) {
   const popup = document.getElementById("popup");
   if (!popup) return;
 
@@ -211,11 +210,47 @@ function openPopup(name, img, basePrice) {
 
   // Lưu thông tin sản phẩm hiện tại
   currentProduct = { name, img, basePrice: basePrice || 0 };
+  currentCategory = category || "drink";
   selectedSize = "";
   selectedPrice = 0;
+  popupQuantity = 1;
 
-  // Reset giá khi mở popup
-  document.getElementById("price-value").innerText = "0";
+  // Lấy các phần tử cần ẩn/hiện
+  const sizeOptions = document.getElementById("sizeOptions");
+  const sugarGroup = document.getElementById("sugarOptions");
+  const iceGroup = document.getElementById("iceOptions");
+  const popupDesc = document.querySelector(".popup-desc");
+  const sugarParent = sugarGroup ? sugarGroup.closest(".option-group") : null;
+  const iceParent = iceGroup ? iceGroup.closest(".option-group") : null;
+  const qtySection = document.getElementById("popupQuantity");
+  const qtyValueEl = document.getElementById("popupQtyValue");
+
+  const isFood = currentCategory === "food" || currentCategory === "topping";
+
+  if (isFood) {
+    // Ẩn size, đường, đá cho bánh ngọt / topping
+    if (sizeOptions) sizeOptions.style.display = "none";
+    if (sugarParent) sugarParent.style.display = "none";
+    if (iceParent) iceParent.style.display = "none";
+    if (popupDesc) popupDesc.textContent = "";
+    if (qtySection) qtySection.style.display = "flex";
+    if (qtyValueEl) qtyValueEl.textContent = "1";
+
+    // Tự động set giá = giá gốc
+    selectedSize = "Mặc định";
+    selectedPrice = basePrice;
+    document.getElementById("price-value").innerText = basePrice.toLocaleString("vi-VN");
+  } else {
+    // Hiện lại cho đồ uống
+    if (sizeOptions) sizeOptions.style.display = "";
+    if (sugarParent) sugarParent.style.display = "";
+    if (iceParent) iceParent.style.display = "";
+    if (popupDesc) popupDesc.textContent = "Chọn size để xem giá";
+    if (qtySection) qtySection.style.display = "none";
+
+    // Reset giá khi mở popup
+    document.getElementById("price-value").innerText = "0";
+  }
 
   // Tính giá theo size dựa trên giá gốc của sản phẩm
   const priceS = basePrice;
@@ -291,6 +326,18 @@ function selectSize(size, price, btnElement) {
   if (btnElement) btnElement.classList.add("active");
 }
 
+// Thay đổi số lượng trong popup (cho bánh/topping)
+var popupQuantity = 1;
+function changePopupQty(delta) {
+  popupQuantity += delta;
+  if (popupQuantity < 1) popupQuantity = 1;
+  const qtyEl = document.getElementById("popupQtyValue");
+  if (qtyEl) qtyEl.textContent = popupQuantity;
+  // Cập nhật giá hiển thị theo số lượng
+  const totalPrice = selectedPrice * popupQuantity;
+  document.getElementById("price-value").innerText = totalPrice.toLocaleString("vi-VN");
+}
+
 // Chọn lượng đường / đá
 function selectOption(type, value, btnElement) {
   // Cập nhật giá trị
@@ -324,9 +371,10 @@ function selectOption(type, value, btnElement) {
 // ==================== THÊM VÀO GIỎ HÀNG ====================
 function addToCart() {
   const sizeError = document.getElementById("sizeError");
+  const isFood = currentCategory === "food" || currentCategory === "topping";
 
-  // Kiểm tra đã chọn size chưa
-  if (!selectedSize || selectedPrice === 0) {
+  // Kiểm tra đã chọn size chưa (chỉ áp dụng cho đồ uống)
+  if (!isFood && (!selectedSize || selectedPrice === 0)) {
     // Hiện thông báo lỗi bằng popup
     if (sizeError) sizeError.classList.add("show");
     showGiborPopup({
@@ -353,14 +401,14 @@ function addToCart() {
     (item) =>
       item.name === currentProduct.name &&
       item.size === selectedSize &&
-      item.sugar === selectedSugar &&
-      item.ice === selectedIce &&
+      item.sugar === (isFood ? "" : selectedSugar) &&
+      item.ice === (isFood ? "" : selectedIce) &&
       item.note === note,
   );
 
   if (existIndex !== -1) {
     // Nếu đã có (cùng tùy chọn) thì tăng số lượng
-    cart[existIndex].quantity += 1;
+    cart[existIndex].quantity += isFood ? popupQuantity : 1;
   } else {
     // Nếu chưa có thì thêm mới
     cart.push({
@@ -368,10 +416,10 @@ function addToCart() {
       image: currentProduct.img,
       size: selectedSize,
       price: selectedPrice,
-      sugar: selectedSugar,
-      ice: selectedIce,
+      sugar: isFood ? "" : selectedSugar,
+      ice: isFood ? "" : selectedIce,
       note: note,
-      quantity: 1,
+      quantity: isFood ? popupQuantity : 1,
     });
   }
 
@@ -389,12 +437,15 @@ function addToCart() {
 
   // Đóng popup và hiện toast thông báo
   closePopup();
+  const toastQty = isFood && popupQuantity > 1 ? " x" + popupQuantity : "";
+  const toastSize = isFood ? "" : " (Size " + selectedSize + ")";
   showPopupToast(
     'Đã thêm "' +
       currentProduct.name +
-      '" (Size ' +
-      selectedSize +
-      ") vào giỏ hàng!",
+      '"' +
+      toastQty +
+      toastSize +
+      " vào giỏ hàng!",
   );
 }
 
@@ -564,9 +615,7 @@ function showOrderHistoryPopup() {
           " x" +
           item.quantity +
           "</span>" +
-          '<span class="order-card-item-detail">Size ' +
-          item.size +
-          "</span>" +
+          (item.size !== "Mặc định" ? '<span class="order-card-item-detail">Size ' + item.size + "</span>" : "") +
           '<span class="order-card-item-price">' +
           itemTotal.toLocaleString("vi-VN") +
           "đ</span>" +
@@ -600,6 +649,23 @@ function showOrderHistoryPopup() {
         customerHTML += "</div>";
       }
 
+      // Thông tin chi nhánh (nếu uống tại quán)
+      let branchHTML = "";
+      if (order.branch) {
+        branchHTML = '<div class="order-card-customer">';
+        if (order.branch.name)
+          branchHTML +=
+            '<span><i class="fas fa-store"></i> ' +
+            order.branch.name +
+            "</span>";
+        if (order.branch.address)
+          branchHTML +=
+            '<span><i class="fas fa-map-marker-alt"></i> ' +
+            order.branch.address +
+            "</span>";
+        branchHTML += "</div>";
+      }
+
       contentHTML +=
         '<div class="order-card">' +
         '<div class="order-card-header">' +
@@ -611,6 +677,7 @@ function showOrderHistoryPopup() {
         "</span>" +
         "</div>" +
         customerHTML +
+        branchHTML +
         '<div class="order-card-items">' +
         itemsHTML +
         "</div>" +
@@ -841,7 +908,8 @@ function showEmailOTPPopup(email, onSuccess) {
       timeLeft--;
       const m = Math.floor(timeLeft / 60);
       const s = timeLeft % 60;
-      if (countdownEl) countdownEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+      if (countdownEl)
+        countdownEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
       if (timeLeft <= 0) {
         clearInterval(countdownTimer);
         _giborOTP = null;
@@ -953,41 +1021,50 @@ function showProfilePopup() {
     '<div class="profile-popup-box">' +
     // Header
     '<div class="profile-popup-header">' +
-    '<div class="profile-popup-avatar">' + initials + "</div>" +
+    '<div class="profile-popup-avatar">' +
+    initials +
+    "</div>" +
     '<div class="profile-popup-header-info">' +
-    '<h3>Tài khoản của tôi</h3>' +
-    '<p>' + currentUser.email + "</p>" +
+    "<h3>Tài khoản của tôi</h3>" +
+    "<p>" +
+    currentUser.email +
+    "</p>" +
     "</div>" +
     '<button class="profile-popup-close" id="profilePopupClose">✕</button>' +
     "</div>" +
-
     // Tab buttons
     '<div class="profile-tabs">' +
     '<button class="profile-tab active" data-tab="info"><i class="fas fa-user-edit"></i> Thông tin</button>' +
     '<button class="profile-tab" data-tab="security"><i class="fas fa-lock"></i> Bảo mật</button>' +
     "</div>" +
-
     // Tab: Thông tin cá nhân
     '<div class="profile-tab-content active" id="tabInfo">' +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-user"></i> Họ</label>' +
-    '<input type="text" id="profileLastName" value="' + (currentUser.lastName || "") + '" />' +
+    '<input type="text" id="profileLastName" value="' +
+    (currentUser.lastName || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-user"></i> Tên</label>' +
-    '<input type="text" id="profileFirstName" value="' + (currentUser.firstName || "") + '" />' +
+    '<input type="text" id="profileFirstName" value="' +
+    (currentUser.firstName || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-phone"></i> Số điện thoại</label>' +
-    '<input type="tel" id="profilePhone" value="' + (currentUser.phone || "") + '" />' +
+    '<input type="tel" id="profilePhone" value="' +
+    (currentUser.phone || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-envelope"></i> Email <span class="profile-verify-badge"><i class="fas fa-shield-alt"></i> Cần xác thực Email</span></label>' +
-    '<input type="email" id="profileEmail" value="' + (currentUser.email || "") + '" />' +
+    '<input type="email" id="profileEmail" value="' +
+    (currentUser.email || "") +
+    '" />' +
     "</div>" +
     '<button class="profile-save-btn" id="btnSaveProfile"><i class="fas fa-save"></i> Lưu thay đổi</button>' +
     "</div>" +
-
     // Tab: Đổi mật khẩu
     '<div class="profile-tab-content" id="tabSecurity">' +
     '<div class="profile-form-group">' +
@@ -1005,7 +1082,6 @@ function showProfilePopup() {
     '<p class="profile-security-note"><i class="fas fa-info-circle"></i> Đổi mật khẩu cần xác thực qua mã gửi đến email của bạn.</p>' +
     '<button class="profile-save-btn security" id="btnChangePassword"><i class="fas fa-shield-alt"></i> Xác thực Email & Đổi mật khẩu</button>' +
     "</div>" +
-
     "</div>";
 
   document.body.appendChild(overlay);
@@ -1017,8 +1093,12 @@ function showProfilePopup() {
   // ===== Tab switching =====
   overlay.querySelectorAll(".profile-tab").forEach((tab) => {
     tab.addEventListener("click", () => {
-      overlay.querySelectorAll(".profile-tab").forEach((t) => t.classList.remove("active"));
-      overlay.querySelectorAll(".profile-tab-content").forEach((c) => c.classList.remove("active"));
+      overlay
+        .querySelectorAll(".profile-tab")
+        .forEach((t) => t.classList.remove("active"));
+      overlay
+        .querySelectorAll(".profile-tab-content")
+        .forEach((c) => c.classList.remove("active"));
       tab.classList.add("active");
       const tabId = tab.dataset.tab === "info" ? "tabInfo" : "tabSecurity";
       document.getElementById(tabId).classList.add("active");
@@ -1031,7 +1111,9 @@ function showProfilePopup() {
     setTimeout(() => overlay.remove(), 300);
   }
 
-  document.getElementById("profilePopupClose").addEventListener("click", closeProfile);
+  document
+    .getElementById("profilePopupClose")
+    .addEventListener("click", closeProfile);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeProfile();
   });
@@ -1039,7 +1121,9 @@ function showProfilePopup() {
   // ===== Lưu thông tin cá nhân =====
   document.getElementById("btnSaveProfile").addEventListener("click", () => {
     const newLastName = document.getElementById("profileLastName").value.trim();
-    const newFirstName = document.getElementById("profileFirstName").value.trim();
+    const newFirstName = document
+      .getElementById("profileFirstName")
+      .value.trim();
     const newPhone = document.getElementById("profilePhone").value.trim();
     const newEmail = document.getElementById("profileEmail").value.trim();
 
