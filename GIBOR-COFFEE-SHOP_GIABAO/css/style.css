@@ -87,6 +87,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 /* ================================== NỀN TỐI ==================================  */
 body.dark {
   --bg: #121212;
@@ -143,6 +147,7 @@ body {
   z-index: 999;
   background: var(--primary);
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .header-container {
@@ -1336,7 +1341,9 @@ a {
   font-size: 0.9rem;
   color: #2d2424;
   background: #faf8f6;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -1462,11 +1469,22 @@ a {
 }
 
 @keyframes otpShake {
-  0%, 100% { transform: scale(1) translateX(0); }
-  20% { transform: scale(1) translateX(-10px); }
-  40% { transform: scale(1) translateX(10px); }
-  60% { transform: scale(1) translateX(-6px); }
-  80% { transform: scale(1) translateX(6px); }
+  0%,
+  100% {
+    transform: scale(1) translateX(0);
+  }
+  20% {
+    transform: scale(1) translateX(-10px);
+  }
+  40% {
+    transform: scale(1) translateX(10px);
+  }
+  60% {
+    transform: scale(1) translateX(-6px);
+  }
+  80% {
+    transform: scale(1) translateX(6px);
+  }
 }
 
 /* OTP Header */

@@ -166,13 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
       // Nút tài khoản của tôi → hiện popup quản lý tài khoản
-      document
-        .getElementById("btnMyAccount")
-        .addEventListener("click", (e) => {
-          e.preventDefault();
-          dropdownOverlay.classList.remove("show");
-          showProfilePopup();
-        });
+      document.getElementById("btnMyAccount").addEventListener("click", (e) => {
+        e.preventDefault();
+        dropdownOverlay.classList.remove("show");
+        showProfilePopup();
+      });
     }
     // Nếu chưa đăng nhập → giữ nguyên link "Đăng nhập"
   }
@@ -841,7 +839,8 @@ function showEmailOTPPopup(email, onSuccess) {
       timeLeft--;
       const m = Math.floor(timeLeft / 60);
       const s = timeLeft % 60;
-      if (countdownEl) countdownEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+      if (countdownEl)
+        countdownEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
       if (timeLeft <= 0) {
         clearInterval(countdownTimer);
         _giborOTP = null;
@@ -953,41 +952,50 @@ function showProfilePopup() {
     '<div class="profile-popup-box">' +
     // Header
     '<div class="profile-popup-header">' +
-    '<div class="profile-popup-avatar">' + initials + "</div>" +
+    '<div class="profile-popup-avatar">' +
+    initials +
+    "</div>" +
     '<div class="profile-popup-header-info">' +
-    '<h3>Tài khoản của tôi</h3>' +
-    '<p>' + currentUser.email + "</p>" +
+    "<h3>Tài khoản của tôi</h3>" +
+    "<p>" +
+    currentUser.email +
+    "</p>" +
     "</div>" +
     '<button class="profile-popup-close" id="profilePopupClose">✕</button>' +
     "</div>" +
-
     // Tab buttons
     '<div class="profile-tabs">' +
     '<button class="profile-tab active" data-tab="info"><i class="fas fa-user-edit"></i> Thông tin</button>' +
     '<button class="profile-tab" data-tab="security"><i class="fas fa-lock"></i> Bảo mật</button>' +
     "</div>" +
-
     // Tab: Thông tin cá nhân
     '<div class="profile-tab-content active" id="tabInfo">' +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-user"></i> Họ</label>' +
-    '<input type="text" id="profileLastName" value="' + (currentUser.lastName || "") + '" />' +
+    '<input type="text" id="profileLastName" value="' +
+    (currentUser.lastName || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-user"></i> Tên</label>' +
-    '<input type="text" id="profileFirstName" value="' + (currentUser.firstName || "") + '" />' +
+    '<input type="text" id="profileFirstName" value="' +
+    (currentUser.firstName || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-phone"></i> Số điện thoại</label>' +
-    '<input type="tel" id="profilePhone" value="' + (currentUser.phone || "") + '" />' +
+    '<input type="tel" id="profilePhone" value="' +
+    (currentUser.phone || "") +
+    '" />' +
     "</div>" +
     '<div class="profile-form-group">' +
     '<label><i class="fas fa-envelope"></i> Email <span class="profile-verify-badge"><i class="fas fa-shield-alt"></i> Cần xác thực Email</span></label>' +
-    '<input type="email" id="profileEmail" value="' + (currentUser.email || "") + '" />' +
+    '<input type="email" id="profileEmail" value="' +
+    (currentUser.email || "") +
+    '" />' +
     "</div>" +
     '<button class="profile-save-btn" id="btnSaveProfile"><i class="fas fa-save"></i> Lưu thay đổi</button>' +
     "</div>" +
-
     // Tab: Đổi mật khẩu
     '<div class="profile-tab-content" id="tabSecurity">' +
     '<div class="profile-form-group">' +
@@ -1005,7 +1013,6 @@ function showProfilePopup() {
     '<p class="profile-security-note"><i class="fas fa-info-circle"></i> Đổi mật khẩu cần xác thực qua mã gửi đến email của bạn.</p>' +
     '<button class="profile-save-btn security" id="btnChangePassword"><i class="fas fa-shield-alt"></i> Xác thực Email & Đổi mật khẩu</button>' +
     "</div>" +
-
     "</div>";
 
   document.body.appendChild(overlay);
@@ -1017,8 +1024,12 @@ function showProfilePopup() {
   // ===== Tab switching =====
   overlay.querySelectorAll(".profile-tab").forEach((tab) => {
     tab.addEventListener("click", () => {
-      overlay.querySelectorAll(".profile-tab").forEach((t) => t.classList.remove("active"));
-      overlay.querySelectorAll(".profile-tab-content").forEach((c) => c.classList.remove("active"));
+      overlay
+        .querySelectorAll(".profile-tab")
+        .forEach((t) => t.classList.remove("active"));
+      overlay
+        .querySelectorAll(".profile-tab-content")
+        .forEach((c) => c.classList.remove("active"));
       tab.classList.add("active");
       const tabId = tab.dataset.tab === "info" ? "tabInfo" : "tabSecurity";
       document.getElementById(tabId).classList.add("active");
@@ -1031,7 +1042,9 @@ function showProfilePopup() {
     setTimeout(() => overlay.remove(), 300);
   }
 
-  document.getElementById("profilePopupClose").addEventListener("click", closeProfile);
+  document
+    .getElementById("profilePopupClose")
+    .addEventListener("click", closeProfile);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeProfile();
   });
@@ -1039,7 +1052,9 @@ function showProfilePopup() {
   // ===== Lưu thông tin cá nhân =====
   document.getElementById("btnSaveProfile").addEventListener("click", () => {
     const newLastName = document.getElementById("profileLastName").value.trim();
-    const newFirstName = document.getElementById("profileFirstName").value.trim();
+    const newFirstName = document
+      .getElementById("profileFirstName")
+      .value.trim();
     const newPhone = document.getElementById("profilePhone").value.trim();
     const newEmail = document.getElementById("profileEmail").value.trim();
 

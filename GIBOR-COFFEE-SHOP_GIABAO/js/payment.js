@@ -1091,7 +1091,7 @@ const CONFIG = {
   BANK_ID: "MB", // Ngân hàng MB Bank
   ACC_NO: "398383979",
   ACC_NAME: "TRAN GIA BAO",
-  TEMPLATE: "compact2", // 'compact', 'compact2', hoặc 'qr_only'
+  TEMPLATE: "qr_only", // 'compact', 'compact2', hoặc 'qr_only'
 };
 
 // Hàm updateQRCode() - Cập nhật mã QR thanh toán với số tiền hiện tại
