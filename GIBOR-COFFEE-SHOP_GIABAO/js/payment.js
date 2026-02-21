@@ -67,6 +67,7 @@ function renderOrderSummary() {
         <div class="order-item-info">
           <div class="order-item-name">${item.name}</div>
           <div class="order-item-meta">${item.size === "Mặc định" ? "" : "Size " + item.size}${item.sugar ? " | Đường " + item.sugar : ""}${item.ice ? " | Đá " + item.ice : ""}${item.toppings && item.toppings.length > 0 ? " | Topping: " + item.toppings.map(t => t.name).join(", ") : ""}</div>
+          ${item.note ? `<div class="order-item-note">Ghi chú: ${item.note}</div>` : ""}
         </div>
         <div class="order-item-price">${formatPrice(total)}</div>
       </div>`;
@@ -589,8 +590,10 @@ async function placeOrder() {
         size: i.size,
         price: i.price,
         quantity: i.quantity,
-        sugar: i.sugar,
-        ice: i.ice,
+        sugar: i.sugar || "",
+        ice: i.ice || "",
+        toppings: i.toppings || [],
+        note: i.note || "",
       })),
       total: subtotal,
       payment:

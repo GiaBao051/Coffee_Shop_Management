@@ -660,16 +660,30 @@ function showOrderHistoryPopup() {
       let itemsHTML = "";
       order.items.forEach((item) => {
         const itemTotal = item.price * item.quantity;
-        const toppingNames = (item.toppings && item.toppings.length > 0) ? item.toppings.map(t => t.name).join(", ") : "";
+        const isFood = item.size === "Mặc định";
+
+        // Dòng chi tiết
+        let detailParts = [];
+        if (!isFood && item.size) detailParts.push("Size " + item.size);
+        if (item.sugar) detailParts.push("Đường " + item.sugar);
+        if (item.ice) detailParts.push("Đá " + item.ice);
+        if (item.toppings && item.toppings.length > 0) {
+          detailParts.push("Topping: " + item.toppings.map(t => t.name).join(", "));
+        }
+        if (item.note) detailParts.push('Ghi chú: "' + item.note + '"');
+
+        const detailStr = detailParts.join(" · ");
+
         itemsHTML +=
           '<div class="order-card-item">' +
+          '<div class="order-card-item-left">' +
           '<span class="order-card-item-name">' +
           item.name +
           " x" +
           item.quantity +
           "</span>" +
-          (item.size !== "Mặc định" ? '<span class="order-card-item-detail">Size ' + item.size + "</span>" : "") +
-          (toppingNames ? '<span class="order-card-item-detail">Topping: ' + toppingNames + "</span>" : "") +
+          (detailStr ? '<span class="order-card-item-detail-scroll"><span class="order-card-item-detail-inner">' + detailStr + "</span></span>" : "") +
+          "</div>" +
           '<span class="order-card-item-price">' +
           itemTotal.toLocaleString("vi-VN") +
           "đ</span>" +
