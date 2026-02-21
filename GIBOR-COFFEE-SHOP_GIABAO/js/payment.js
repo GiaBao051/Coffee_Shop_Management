@@ -561,13 +561,28 @@ async function placeOrder() {
     const ckPhoneEl = document.getElementById("ckPhone");
     const ckEmailEl = document.getElementById("ckEmail");
     const ckAddressEl = document.getElementById("ckAddress");
+    const ckCityEl = document.getElementById("ckCity");
+    const ckWardEl = document.getElementById("ckWard");
+
+    // Ghép địa chỉ đầy đủ: số nhà + phường/xã + tỉnh/thành phố
+    let fullAddress = "";
+    if (selectedShipping === "delivery") {
+      const streetAddr = ckAddressEl ? ckAddressEl.value.trim() : "";
+      const wardName = ckWardEl ? ckWardEl.options[ckWardEl.selectedIndex]?.text : "";
+      const cityName = ckCityEl ? ckCityEl.options[ckCityEl.selectedIndex]?.text : "";
+      const parts = [streetAddr, wardName, cityName].filter(
+        (p) => p && p !== "--- Chọn ---"
+      );
+      fullAddress = parts.join(", ");
+    }
+
     OrderManager.saveOrder({
       code: code,
       customer: {
         name: ckNameEl ? ckNameEl.value.trim() : "",
         phone: ckPhoneEl ? ckPhoneEl.value.trim() : "",
         email: ckEmailEl ? ckEmailEl.value.trim() : "",
-        address: ckAddressEl ? ckAddressEl.value.trim() : "",
+        address: fullAddress,
       },
       items: cart.map((i) => ({
         name: i.name,
