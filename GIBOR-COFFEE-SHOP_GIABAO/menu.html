@@ -503,6 +503,16 @@
               ></textarea>
             </div>
 
+            <!-- Số lượng (hiện cho bánh/topping) -->
+            <div class="popup-quantity" id="popupQuantity" style="display: none;">
+              <label class="option-label">Số lượng:</label>
+              <div class="quantity-control">
+                <button class="qty-btn" onclick="changePopupQty(-1)">−</button>
+                <span class="qty-value" id="popupQtyValue">1</span>
+                <button class="qty-btn" onclick="changePopupQty(1)">+</button>
+              </div>
+            </div>
+
             <!-- Giá đang chọn -->
             <div class="popup-price">
               Giá: <strong><span id="price-value">0</span>đ</strong>
