@@ -87,10 +87,6 @@
   box-sizing: border-box;
 }
 
-html, body {
-  overflow-x: hidden;
-}
-
 /* ================================== NỀN TỐI ==================================  */
 body.dark {
   --bg: #121212;
@@ -147,7 +143,6 @@ body {
   z-index: 999;
   background: var(--primary);
   transition: all 0.3s ease;
-  overflow: hidden;
 }
 
 .header-container {
