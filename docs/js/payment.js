@@ -66,7 +66,7 @@ function renderOrderSummary() {
         </div>
         <div class="order-item-info">
           <div class="order-item-name">${item.name}</div>
-          <div class="order-item-meta">${item.size === "Mặc định" ? "" : "Size " + item.size}${item.sugar ? " | Đường " + item.sugar : ""}${item.ice ? " | Đá " + item.ice : ""}</div>
+          <div class="order-item-meta">${item.size === "Mặc định" ? "" : "Size " + item.size}${item.sugar ? " | Đường " + item.sugar : ""}${item.ice ? " | Đá " + item.ice : ""}${item.toppings && item.toppings.length > 0 ? " | Topping: " + item.toppings.map(t => t.name).join(", ") : ""}</div>
         </div>
         <div class="order-item-price">${formatPrice(total)}</div>
       </div>`;
