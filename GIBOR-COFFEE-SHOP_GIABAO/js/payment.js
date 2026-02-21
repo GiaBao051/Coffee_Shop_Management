@@ -190,10 +190,10 @@ function selectPayment(method) {
   if (method === "banking") {
     // Hiện QR thanh toán
     if (bankInfo) bankInfo.style.display = "block";
-    // Đổi text nút thành "XÁC NHẬN ĐÃ THANH TOÁN"
+    // Đổi text nút thành "ĐẶ HÀNG"
     if (btnPlace)
       btnPlace.innerHTML =
-        '<i class="fa-solid fa-credit-card"></i> XÁC NHẬN ĐÃ THANH TOÁN';
+        '<i class="fa-solid fa-credit-card"></i> ĐẶT HÀNG';
     // Cập nhật QR code với số tiền hiện tại
     updateQRCode();
   } else {
