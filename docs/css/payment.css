@@ -536,6 +536,13 @@ body.dark {
   margin-top: 2px;
 }
 
+.order-item-note {
+  font-size: 11px;
+  color: #888;
+  margin-top: 3px;
+  font-style: italic;
+}
+
 .order-item-price {
   font-weight: 700;
   font-size: 14px;
