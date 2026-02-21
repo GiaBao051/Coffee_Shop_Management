@@ -583,6 +583,9 @@ async function placeOrder() {
           ? "Chuyển khoản"
           : "Thanh toán khi nhận hàng",
       shipping: selectedShipping === "delivery" ? "Giao hàng" : "Uống tại quán",
+      branch: selectedBranch
+        ? { name: selectedBranch.name, address: selectedBranch.address }
+        : null,
     });
   }
 

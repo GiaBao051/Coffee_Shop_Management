@@ -598,6 +598,23 @@ function showOrderHistoryPopup() {
         customerHTML += "</div>";
       }
 
+      // Thông tin chi nhánh (nếu uống tại quán)
+      let branchHTML = "";
+      if (order.branch) {
+        branchHTML = '<div class="order-card-customer">';
+        if (order.branch.name)
+          branchHTML +=
+            '<span><i class="fas fa-store"></i> ' +
+            order.branch.name +
+            "</span>";
+        if (order.branch.address)
+          branchHTML +=
+            '<span><i class="fas fa-map-marker-alt"></i> ' +
+            order.branch.address +
+            "</span>";
+        branchHTML += "</div>";
+      }
+
       contentHTML +=
         '<div class="order-card">' +
         '<div class="order-card-header">' +
@@ -609,6 +626,7 @@ function showOrderHistoryPopup() {
         "</span>" +
         "</div>" +
         customerHTML +
+        branchHTML +
         '<div class="order-card-items">' +
         itemsHTML +
         "</div>" +
