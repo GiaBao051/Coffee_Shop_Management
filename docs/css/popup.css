@@ -255,8 +255,11 @@ body.dark .option-label {
 .popup-quantity {
   display: flex;
   align-items: center;
+  text-align: center;
+  vertical-align: middle;
   gap: 16px;
   margin-bottom: 16px;
+  margin-left: 65px;
 }
 
 .popup-quantity .option-label {
