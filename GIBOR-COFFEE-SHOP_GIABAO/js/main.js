@@ -198,8 +198,9 @@ let selectedSize = "";
 let selectedPrice = 0;
 let selectedSugar = "50%";
 let selectedIce = "100%";
+let currentCategory = "drink"; // 'drink', 'food', 'topping'
 
-function openPopup(name, img, basePrice) {
+function openPopup(name, img, basePrice, category) {
   const popup = document.getElementById("popup");
   if (!popup) return;
 
@@ -209,11 +210,41 @@ function openPopup(name, img, basePrice) {
 
   // Lưu thông tin sản phẩm hiện tại
   currentProduct = { name, img, basePrice: basePrice || 0 };
+  currentCategory = category || "drink";
   selectedSize = "";
   selectedPrice = 0;
 
-  // Reset giá khi mở popup
-  document.getElementById("price-value").innerText = "0";
+  // Lấy các phần tử cần ẩn/hiện
+  const sizeOptions = document.getElementById("sizeOptions");
+  const sugarGroup = document.getElementById("sugarOptions");
+  const iceGroup = document.getElementById("iceOptions");
+  const popupDesc = document.querySelector(".popup-desc");
+  const sugarParent = sugarGroup ? sugarGroup.closest(".option-group") : null;
+  const iceParent = iceGroup ? iceGroup.closest(".option-group") : null;
+
+  const isFood = currentCategory === "food" || currentCategory === "topping";
+
+  if (isFood) {
+    // Ẩn size, đường, đá cho bánh ngọt / topping
+    if (sizeOptions) sizeOptions.style.display = "none";
+    if (sugarParent) sugarParent.style.display = "none";
+    if (iceParent) iceParent.style.display = "none";
+    if (popupDesc) popupDesc.textContent = "";
+
+    // Tự động set giá = giá gốc
+    selectedSize = "Mặc định";
+    selectedPrice = basePrice;
+    document.getElementById("price-value").innerText = basePrice.toLocaleString("vi-VN");
+  } else {
+    // Hiện lại cho đồ uống
+    if (sizeOptions) sizeOptions.style.display = "";
+    if (sugarParent) sugarParent.style.display = "";
+    if (iceParent) iceParent.style.display = "";
+    if (popupDesc) popupDesc.textContent = "Chọn size để xem giá";
+
+    // Reset giá khi mở popup
+    document.getElementById("price-value").innerText = "0";
+  }
 
   // Tính giá theo size dựa trên giá gốc của sản phẩm
   const priceS = basePrice;
@@ -322,9 +353,10 @@ function selectOption(type, value, btnElement) {
 // ==================== THÊM VÀO GIỎ HÀNG ====================
 function addToCart() {
   const sizeError = document.getElementById("sizeError");
+  const isFood = currentCategory === "food" || currentCategory === "topping";
 
-  // Kiểm tra đã chọn size chưa
-  if (!selectedSize || selectedPrice === 0) {
+  // Kiểm tra đã chọn size chưa (chỉ áp dụng cho đồ uống)
+  if (!isFood && (!selectedSize || selectedPrice === 0)) {
     // Hiện thông báo lỗi bằng popup
     if (sizeError) sizeError.classList.add("show");
     showGiborPopup({
@@ -351,8 +383,8 @@ function addToCart() {
     (item) =>
       item.name === currentProduct.name &&
       item.size === selectedSize &&
-      item.sugar === selectedSugar &&
-      item.ice === selectedIce &&
+      item.sugar === (isFood ? "" : selectedSugar) &&
+      item.ice === (isFood ? "" : selectedIce) &&
       item.note === note,
   );
 
@@ -366,8 +398,8 @@ function addToCart() {
       image: currentProduct.img,
       size: selectedSize,
       price: selectedPrice,
-      sugar: selectedSugar,
-      ice: selectedIce,
+      sugar: isFood ? "" : selectedSugar,
+      ice: isFood ? "" : selectedIce,
       note: note,
       quantity: 1,
     });
@@ -387,12 +419,13 @@ function addToCart() {
 
   // Đóng popup và hiện toast thông báo
   closePopup();
+  const toastSize = isFood ? "" : " (Size " + selectedSize + ")";
   showPopupToast(
     'Đã thêm "' +
       currentProduct.name +
-      '" (Size ' +
-      selectedSize +
-      ") vào giỏ hàng!",
+      '"' +
+      toastSize +
+      " vào giỏ hàng!",
   );
 }
 
@@ -562,9 +595,7 @@ function showOrderHistoryPopup() {
           " x" +
           item.quantity +
           "</span>" +
-          '<span class="order-card-item-detail">Size ' +
-          item.size +
-          "</span>" +
+          (item.size !== "Mặc định" ? '<span class="order-card-item-detail">Size ' + item.size + "</span>" : "") +
           '<span class="order-card-item-price">' +
           itemTotal.toLocaleString("vi-VN") +
           "đ</span>" +

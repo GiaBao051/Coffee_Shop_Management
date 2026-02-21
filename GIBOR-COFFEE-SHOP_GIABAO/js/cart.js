@@ -92,6 +92,7 @@ function renderCart() {
     const sugarText = item.sugar ? `Đường: ${item.sugar}` : "";
     const iceText = item.ice ? `Đá: ${item.ice}` : "";
     const noteText = item.note ? `📝 ${item.note}` : "";
+    const isFood = item.size === "Mặc định";
 
     html += `
       <tr>
@@ -100,13 +101,13 @@ function renderCart() {
             <img src="${item.image}" alt="${item.name}">
             <div class="cart-product-info">
               <span class="cart-product-name">${item.name}</span>
-              <span class="cart-product-options">🍬 ${sugarText} &nbsp;|&nbsp; 🧊 ${iceText}</span>
+              ${!isFood ? `<span class="cart-product-options">🍬 ${sugarText} &nbsp;|&nbsp; 🧊 ${iceText}</span>` : ""}
               ${noteText ? `<span class="cart-product-note">${noteText}</span>` : ""}
             </div>
           </div>
         </td>
         <td data-label="Size">
-          <span class="cart-size">${item.size}</span>
+          <span class="cart-size">${isFood ? "-" : item.size}</span>
         </td>
         <td data-label="Đơn giá">
           <span class="cart-price">${formatPrice(item.price)}</span>
