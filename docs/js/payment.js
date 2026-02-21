@@ -1127,12 +1127,18 @@ function updateWards() {
   // Xóa tất cả các option cũ (trừ option đầu tiên)
   wardSelect.innerHTML = '<option value="">--- Chọn ---</option>';
 
-  if (!selectedCity) return;
+  if (!selectedCity) {
+    refreshSearchable("ckWard");
+    return;
+  }
 
   // Lấy danh sách phường/xã cho tỉnh đã chọn
   const wards = WARD_NAMES[selectedCity];
 
-  if (!wards) return;
+  if (!wards) {
+    refreshSearchable("ckWard");
+    return;
+  }
 
   // Thêm các option mới
   wards.forEach((ward) => {
@@ -1141,12 +1147,165 @@ function updateWards() {
     option.textContent = ward;
     wardSelect.appendChild(option);
   });
+
+  // Cập nhật giao diện tìm kiếm
+  refreshSearchable("ckWard");
 }
 
 // ===== ĐÓNG POPUP =====
 function closeSuccess() {
   const overlay = document.getElementById("successOverlay");
   if (overlay) overlay.classList.remove("show");
+}
+
+// ===== TÌM KIẾM PHƯỜNG/XÃ, TỈNH/THÀNH PHỐ =====
+function makeSearchable(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+
+  // Ẩn select gốc
+  select.style.display = "none";
+
+  // Tạo wrapper
+  const wrapper = document.createElement("div");
+  wrapper.className = "ss-wrapper";
+  wrapper.dataset.for = selectId;
+
+  // Nút hiển thị giá trị đã chọn
+  const display = document.createElement("div");
+  display.className = "ss-display";
+  display.innerHTML = '<span class="ss-display-text">--- Chọn ---</span><i class="fa-solid fa-magnifying-glass-location ss-arrow"></i>';
+
+  // Dropdown
+  const dropdown = document.createElement("div");
+  dropdown.className = "ss-dropdown";
+
+  // Ô tìm kiếm
+  const search = document.createElement("input");
+  search.type = "text";
+  search.className = "ss-search";
+  search.placeholder = "Tìm kiếm";
+
+  // Danh sách kết quả
+  const optList = document.createElement("div");
+  optList.className = "ss-options";
+
+  dropdown.appendChild(search);
+  dropdown.appendChild(optList);
+  wrapper.appendChild(display);
+  wrapper.appendChild(dropdown);
+
+  // Chèn sau select
+  select.parentElement.insertBefore(wrapper, select.nextSibling);
+
+  // Dựng danh sách options
+  refreshSearchable(selectId);
+
+  // Mở/đóng dropdown
+  display.addEventListener("click", (e) => {
+    e.stopPropagation();
+    // Đóng các dropdown khác
+    document.querySelectorAll(".ss-wrapper.open").forEach((w) => {
+      if (w !== wrapper) w.classList.remove("open");
+    });
+    wrapper.classList.toggle("open");
+    if (wrapper.classList.contains("open")) {
+      search.value = "";
+      filterSSOptions(optList, "");
+      setTimeout(() => search.focus(), 50);
+    }
+  });
+
+  // Tìm kiếm
+  search.addEventListener("input", () => {
+    filterSSOptions(optList, search.value);
+  });
+
+  // Không đóng khi click trong dropdown
+  dropdown.addEventListener("click", (e) => e.stopPropagation());
+
+  // Click ngoài → đóng
+  document.addEventListener("click", () => {
+    wrapper.classList.remove("open");
+  });
+}
+
+function refreshSearchable(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  const wrapper = select.parentElement.querySelector('.ss-wrapper[data-for="' + selectId + '"]');
+  if (!wrapper) return;
+
+  const optList = wrapper.querySelector(".ss-options");
+  const displayText = wrapper.querySelector(".ss-display-text");
+  optList.innerHTML = "";
+
+  let hasOptions = false;
+
+  Array.from(select.options).forEach((opt) => {
+    if (!opt.value) return; // Bỏ placeholder
+    hasOptions = true;
+    const div = document.createElement("div");
+    div.className = "ss-option";
+    div.textContent = opt.textContent;
+    div.dataset.value = opt.value;
+
+    div.addEventListener("click", () => {
+      select.value = opt.value;
+      select.dispatchEvent(new Event("change"));
+      displayText.textContent = opt.textContent;
+      wrapper.querySelector(".ss-display").classList.add("selected");
+      wrapper.classList.remove("open");
+      // Highlight
+      optList.querySelectorAll(".ss-option").forEach((o) => o.classList.remove("active"));
+      div.classList.add("active");
+    });
+
+    optList.appendChild(div);
+  });
+
+  // Reset nếu select chưa chọn hoặc không có options
+  if (!select.value || !hasOptions) {
+    displayText.textContent = "--- Chọn ---";
+    wrapper.querySelector(".ss-display").classList.remove("selected");
+  }
+}
+
+function filterSSOptions(optList, query) {
+  const q = query
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  const options = optList.querySelectorAll(".ss-option");
+  let visibleCount = 0;
+
+  options.forEach((opt) => {
+    const text = opt.textContent
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    if (!q || text.includes(q)) {
+      opt.style.display = "";
+      visibleCount++;
+    } else {
+      opt.style.display = "none";
+    }
+  });
+
+  // Hiển thị thông báo nếu không tìm thấy
+  let noResult = optList.querySelector(".ss-no-result");
+  if (visibleCount === 0) {
+    if (!noResult) {
+      noResult = document.createElement("div");
+      noResult.className = "ss-no-result";
+      noResult.textContent = "Không tìm thấy kết quả";
+      optList.appendChild(noResult);
+    }
+    noResult.style.display = "";
+  } else if (noResult) {
+    noResult.style.display = "none";
+  }
 }
 
 // ===== SỰ KIỆN KHI TẢI TRANG =====
@@ -1199,6 +1358,10 @@ document.addEventListener("DOMContentLoaded", () => {
   selectShipping("delivery"); // Giao hàng tận nơi
   selectPayment("cod"); // Thanh toán khi giao hàng
   initPoints(); // Khởi tạo điểm tích lũy
+
+  // Khởi tạo tìm kiếm cho Tỉnh/TP và Phường/Xã
+  makeSearchable("ckCity");
+  makeSearchable("ckWard");
 
   // Chọn khu vực chi nhánh
   const branchCity = document.getElementById("branchCity");
