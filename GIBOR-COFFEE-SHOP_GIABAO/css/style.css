@@ -152,6 +152,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 /* LOGO */
@@ -162,6 +163,8 @@ body {
   font-family: var(--font-heading);
   font-size: 1.6rem;
   color: var(--white);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logo img {
@@ -199,6 +202,8 @@ body {
   display: flex;
   list-style: none;
   gap: 30px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .nav-links li {
@@ -213,6 +218,7 @@ body {
   letter-spacing: 1px;
   padding: 6px 0;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 /* Gạch chân chạy */
@@ -242,7 +248,6 @@ body {
     --primary-color
   ); /* Sử dụng đúng tên biến đã khai báo ở :root */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Đổ bóng dùng rgba để chỉnh độ mờ cho đẹp */
-  padding: 10px 5%; /* Thu gọn header lại một chút khi cuộn cho tinh tế */
   transition: all 0.4s ease; /* Giúp hiệu ứng biến đổi mượt mà */
 }
 
@@ -250,6 +255,8 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .icon-btn {
@@ -263,6 +270,8 @@ body {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .icon-btn:hover {
