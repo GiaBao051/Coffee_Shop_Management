@@ -194,8 +194,7 @@
     tabs.className = 'm-category-tabs';
 
     const icons = {
-      'Cà phê': '☕', 'Matcha': '🍵', 'Trà': '🫖',
-      'Bánh ngọt': '🍰', 'Topping': '🧋'
+      'Cà phê': '', 'Matcha': '', 'Trà': '', 'Bánh ngọt': '', 'Topping': ''
     };
 
     sections.forEach((sec, i) => {
