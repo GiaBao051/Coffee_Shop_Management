@@ -83,6 +83,8 @@ function renderOrderSummary() {
 // ===== CẬP NHẬT TỔNG TIỀN =====
 let currentDiscount = 0;
 let isFreeShip = false;
+let pointsDiscount = 0; // Số tiền giảm từ điểm
+let usedPoints = 0; // Số điểm đã dùng
 
 function updateTotals(subtotal) {
   const subEl = document.getElementById("subtotalPrice");
@@ -100,7 +102,7 @@ function updateTotals(subtotal) {
   }
   if (isFreeShip && subtotal > 0) shippingFee = 0;
 
-  const grand = subtotal - currentDiscount + shippingFee;
+  const grand = subtotal - currentDiscount - pointsDiscount + shippingFee;
 
   subEl.textContent = formatPrice(subtotal);
   shipEl.textContent =
@@ -115,6 +117,26 @@ function updateTotals(subtotal) {
     }
   } else {
     discountRow.style.display = "none";
+  }
+
+  // Hiển thị giảm giá từ điểm
+  const pointsDiscountRow = document.getElementById("pointsDiscountRow");
+  const pointsDiscountEl = document.getElementById("pointsDiscountAmount");
+  if (pointsDiscountRow && pointsDiscountEl) {
+    if (pointsDiscount > 0) {
+      pointsDiscountRow.style.display = "flex";
+      pointsDiscountEl.textContent = "- " + formatPrice(pointsDiscount);
+    } else {
+      pointsDiscountRow.style.display = "none";
+    }
+  }
+
+  // Cập nhật điểm nhận được (tính trên tổng sau giảm)
+  const finalTotal = Math.max(0, grand);
+  const earnEl = document.getElementById("pointsEarn");
+  if (earnEl && typeof PointsManager !== "undefined") {
+    const earnedPoints = PointsManager.moneyToPoints(finalTotal);
+    earnEl.textContent = "+" + earnedPoints.toLocaleString("vi-VN") + " điểm";
   }
 
   grandEl.textContent = formatPrice(Math.max(0, grand));
@@ -161,6 +183,92 @@ function applyCoupon() {
   }
 
   showToast(`Áp dụng mã "${code}" thành công!`);
+  updateTotals(subtotal);
+}
+
+// ===== ĐIỂM TÍCH LŨY =====
+function initPoints() {
+  const section = document.getElementById("pointsSection");
+  if (!section) return;
+
+  // Chỉ hiện khi đã đăng nhập
+  if (typeof UserManager === "undefined" || !UserManager.isLoggedIn() || typeof PointsManager === "undefined") {
+    section.style.display = "none";
+    return;
+  }
+
+  section.style.display = "block";
+
+  // Hiển điểm hiện tại
+  const currentPoints = PointsManager.getPoints();
+  const currentEl = document.getElementById("pointsCurrent");
+  if (currentEl) currentEl.textContent = currentPoints.toLocaleString("vi-VN") + " điểm";
+
+  // Set max cho input
+  const input = document.getElementById("pointsInput");
+  if (input) {
+    input.max = currentPoints;
+    input.value = 0;
+  }
+
+  // Cập nhật điểm nhận được
+  const cart = getCart();
+  const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const earnEl = document.getElementById("pointsEarn");
+  if (earnEl) {
+    const earned = PointsManager.moneyToPoints(subtotal);
+    earnEl.textContent = "+" + earned.toLocaleString("vi-VN") + " điểm";
+  }
+
+  // Sự kiện nút áp dụng điểm
+  const btn = document.getElementById("btnUsePoints");
+  if (btn) btn.addEventListener("click", applyPoints);
+}
+
+function applyPoints() {
+  if (typeof PointsManager === "undefined") return;
+
+  const input = document.getElementById("pointsInput");
+  const points = parseInt(input.value) || 0;
+  const currentPoints = PointsManager.getPoints();
+
+  if (points < 0) {
+    showToast("Số điểm không hợp lệ!");
+    return;
+  }
+
+  if (points > currentPoints) {
+    showToast("Bạn không đủ điểm! Hiện có: " + currentPoints.toLocaleString("vi-VN") + " điểm.");
+    input.value = currentPoints;
+    return;
+  }
+
+  // Tính số tiền giảm
+  const cart = getCart();
+  const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  let discount = PointsManager.pointsToMoney(points);
+
+  // Không cho giảm vượt quá tổng tiền
+  if (discount > subtotal - currentDiscount) {
+    discount = subtotal - currentDiscount;
+    // Tính ngược số điểm cần dùng
+    const actualPoints = Math.ceil(discount / 10);
+    input.value = actualPoints;
+    usedPoints = actualPoints;
+    pointsDiscount = PointsManager.pointsToMoney(actualPoints);
+  } else {
+    usedPoints = points;
+    pointsDiscount = discount;
+  }
+
+  if (points === 0) {
+    pointsDiscount = 0;
+    usedPoints = 0;
+    showToast("Đã hủy sử dụng điểm.");
+  } else {
+    showToast(`Áp dụng ${usedPoints.toLocaleString("vi-VN")} điểm, giảm ${formatPrice(pointsDiscount)}!`);
+  }
+
   updateTotals(subtotal);
 }
 
@@ -596,6 +704,8 @@ async function placeOrder() {
         note: i.note || "",
       })),
       total: subtotal,
+      pointsUsed: usedPoints,
+      pointsDiscount: pointsDiscount,
       payment:
         selectedPayment === "banking"
           ? "Chuyển khoản"
@@ -605,6 +715,17 @@ async function placeOrder() {
         ? { name: selectedBranch.name, address: selectedBranch.address }
         : null,
     });
+
+    // Xử lý điểm tích lũy
+    if (typeof PointsManager !== "undefined") {
+      // Trừ điểm đã dùng
+      if (usedPoints > 0) {
+        PointsManager.usePoints(usedPoints);
+      }
+      // Cộng điểm mới (tính trên tổng tiền thực tế sau giảm)
+      const finalTotal = Math.max(0, subtotal - currentDiscount - pointsDiscount);
+      const earnedPoints = PointsManager.earnPoints(finalTotal);
+    }
   }
 
   // Xóa giỏ hàng
@@ -1063,6 +1184,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Khởi tạo trạng thái mặc định
   selectShipping("delivery"); // Giao hàng tận nơi
   selectPayment("cod"); // Thanh toán khi giao hàng
+  initPoints(); // Khởi tạo điểm tích lũy
 
   // Chọn khu vực chi nhánh
   const branchCity = document.getElementById("branchCity");

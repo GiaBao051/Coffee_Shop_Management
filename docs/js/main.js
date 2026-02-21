@@ -94,6 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser.lastName.charAt(0) + currentUser.firstName.charAt(0)
       ).toUpperCase();
 
+      // Lấy điểm tích lũy
+      const userPoints = (typeof PointsManager !== "undefined") ? PointsManager.getPoints() : 0;
+
       dropdownOverlay.innerHTML =
         '<div class="user-dropdown">' +
         '<div class="user-dropdown-header">' +
@@ -107,6 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
         '<div class="user-dropdown-email">' +
         currentUser.email +
         "</div>" +
+        '<div class="user-dropdown-points"><i class="fas fa-coins"></i> ' +
+        userPoints.toLocaleString("vi-VN") +
+        " điểm</div>" +
         "</div>" +
         "</div>" +
         '<ul class="user-dropdown-menu">' +

@@ -884,6 +884,19 @@ a {
   margin-top: 2px;
 }
 
+.user-dropdown-points {
+  font-size: 0.8rem;
+  color: #e6a817;
+  font-weight: 600;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.user-dropdown-points i {
+  font-size: 0.75rem;
+}
+
 .user-dropdown-menu {
   list-style: none;
   padding: 0;
