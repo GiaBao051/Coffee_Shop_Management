@@ -209,6 +209,32 @@
               <button class="btn-coupon" id="btnCoupon">Áp dụng</button>
             </div>
 
+            <!-- Điểm tích lũy -->
+            <div class="points-section" id="pointsSection" style="display: none;">
+              <div class="points-header">
+                <span class="points-icon"><i class="fa-solid fa-coins"></i></span>
+                <span class="points-title">Điểm tích lũy</span>
+                <span class="points-current" id="pointsCurrent">0 điểm</span>
+              </div>
+              <div class="points-body">
+                <div class="points-input-row">
+                  <label>Dùng điểm:</label>
+                  <input type="number" id="pointsInput" min="0" value="0" placeholder="Nhập số điểm" />
+                  <button class="btn-use-points" id="btnUsePoints">Áp dụng</button>
+                </div>
+                <div class="points-info">
+                  <div class="points-info-row">
+                    <span>Điểm nhận được từ đơn này:</span>
+                    <span class="points-earn" id="pointsEarn">+0 điểm</span>
+                  </div>
+                  <div class="points-info-row" id="pointsDiscountRow" style="display: none;">
+                    <span>Giảm giá từ điểm:</span>
+                    <span class="points-discount" id="pointsDiscountAmount">-0đ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Tính tiền -->
             <div class="order-calc">
               <div class="calc-row">
