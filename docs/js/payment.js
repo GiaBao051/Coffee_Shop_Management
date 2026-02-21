@@ -119,7 +119,7 @@ function updateTotals(subtotal) {
     discountRow.style.display = "none";
   }
 
-  // Hiển thị giảm giá từ điểm
+  // Hiển thị giảm giá từ điểm (trong points-section)
   const pointsDiscountRow = document.getElementById("pointsDiscountRow");
   const pointsDiscountEl = document.getElementById("pointsDiscountAmount");
   if (pointsDiscountRow && pointsDiscountEl) {
@@ -131,11 +131,23 @@ function updateTotals(subtotal) {
     }
   }
 
-  // Cập nhật điểm nhận được (tính trên tổng sau giảm)
-  const finalTotal = Math.max(0, grand);
+  // Hiển thị giảm giá từ điểm (trong phần tính tiền - màu xanh)
+  const pCalcRow = document.getElementById("pointsDiscountCalcRow");
+  const pCalcEl = document.getElementById("pointsDiscountCalc");
+  if (pCalcRow && pCalcEl) {
+    if (pointsDiscount > 0) {
+      pCalcRow.style.display = "flex";
+      pCalcEl.textContent = "- " + formatPrice(pointsDiscount);
+    } else {
+      pCalcRow.style.display = "none";
+    }
+  }
+
+  // Cập nhật điểm nhận được (chỉ tính trên tiền hàng, KHÔNG tính phí ship)
+  const productTotal = Math.max(0, subtotal - currentDiscount - pointsDiscount);
   const earnEl = document.getElementById("pointsEarn");
   if (earnEl && typeof PointsManager !== "undefined") {
-    const earnedPoints = PointsManager.moneyToPoints(finalTotal);
+    const earnedPoints = PointsManager.moneyToPoints(productTotal);
     earnEl.textContent = "+" + earnedPoints.toLocaleString("vi-VN") + " điểm";
   }
 
@@ -703,7 +715,9 @@ async function placeOrder() {
         toppings: i.toppings || [],
         note: i.note || "",
       })),
-      total: subtotal,
+      total: Math.max(0, subtotal - currentDiscount - pointsDiscount),
+      subtotal: subtotal,
+      couponDiscount: currentDiscount,
       pointsUsed: usedPoints,
       pointsDiscount: pointsDiscount,
       payment:
@@ -722,9 +736,9 @@ async function placeOrder() {
       if (usedPoints > 0) {
         PointsManager.usePoints(usedPoints);
       }
-      // Cộng điểm mới (tính trên tổng tiền thực tế sau giảm)
-      const finalTotal = Math.max(0, subtotal - currentDiscount - pointsDiscount);
-      const earnedPoints = PointsManager.earnPoints(finalTotal);
+      // Cộng điểm mới (chỉ tính trên tiền hàng, không tính phí ship)
+      const productOnly = Math.max(0, subtotal - currentDiscount - pointsDiscount);
+      const earnedPoints = PointsManager.earnPoints(productOnly);
     }
   }
 

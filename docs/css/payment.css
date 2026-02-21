@@ -1163,6 +1163,13 @@ body.dark {
   gap: 8px 16px;
   font-size: 0.85rem;
 }
+.points-info-row-1 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #555;
+  font-weight: bold;
+}
 .points-info-row {
   display: flex;
   align-items: center;
@@ -1175,6 +1182,15 @@ body.dark {
 }
 .points-info-row.points-discount {
   color: #dc3545;
+  font-weight: 600;
+}
+
+/* Dòng giảm từ điểm trong phần tính tiền */
+.points-discount-calc {
+  color: #28a745;
+}
+.points-discount-green {
+  color: #28a745;
   font-weight: 600;
 }
 
