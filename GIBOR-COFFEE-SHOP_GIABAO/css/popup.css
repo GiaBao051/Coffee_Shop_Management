@@ -251,6 +251,38 @@ body.dark .option-label {
   box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
 }
 
+/* ===== CHỌN TOPPING ===== */
+.topping-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topping-btn {
+  padding: 8px 18px;
+  border: 1.5px solid #ccc;
+  border-radius: 50px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #2d2424);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.topping-btn:hover {
+  border-color: var(--primary, #4b2c20);
+  background: rgba(212, 163, 115, 0.1);
+}
+
+.topping-btn.active {
+  border-color: var(--primary, #4b2c20);
+  color: var(--primary, #4b2c20);
+  background: rgba(212, 163, 115, 0.12);
+  font-weight: 600;
+}
+
 /* ===== SỐ LƯỢNG (BÁNH/TOPPING) ===== */
 .popup-quantity {
   display: flex;

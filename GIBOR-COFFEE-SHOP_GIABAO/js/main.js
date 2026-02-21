@@ -198,6 +198,7 @@ let selectedSize = "";
 let selectedPrice = 0;
 let selectedSugar = "50%";
 let selectedIce = "100%";
+let selectedToppings = []; // [{name, price}]
 let currentCategory = "drink"; // 'drink', 'food', 'topping'
 
 function openPopup(name, img, basePrice, category) {
@@ -228,13 +229,17 @@ function openPopup(name, img, basePrice, category) {
   const isFood = currentCategory === "food" || currentCategory === "topping";
 
   if (isFood) {
-    // Ẩn size, đường, đá cho bánh ngọt / topping
+    // Ẩn size, đường, đá, topping cho bánh ngọt / topping
     if (sizeOptions) sizeOptions.style.display = "none";
     if (sugarParent) sugarParent.style.display = "none";
     if (iceParent) iceParent.style.display = "none";
     if (popupDesc) popupDesc.textContent = "";
     if (qtySection) qtySection.style.display = "flex";
     if (qtyValueEl) qtyValueEl.textContent = "1";
+
+    // Ẩn topping cho bánh/topping
+    const toppingGroup = document.getElementById("toppingGroup");
+    if (toppingGroup) toppingGroup.style.display = "none";
 
     // Tự động set giá = giá gốc
     selectedSize = "Mặc định";
@@ -248,9 +253,19 @@ function openPopup(name, img, basePrice, category) {
     if (popupDesc) popupDesc.textContent = "Chọn size để xem giá";
     if (qtySection) qtySection.style.display = "none";
 
+    // Hiện topping cho đồ uống
+    const toppingGroup = document.getElementById("toppingGroup");
+    if (toppingGroup) toppingGroup.style.display = "";
+
     // Reset giá khi mở popup
     document.getElementById("price-value").innerText = "0";
   }
+
+  // Reset topping
+  selectedToppings = [];
+  document.querySelectorAll(".topping-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
 
   // Tính giá theo size dựa trên giá gốc của sản phẩm
   const priceS = basePrice;
@@ -324,6 +339,9 @@ function selectSize(size, price, btnElement) {
     btn.classList.remove("active");
   });
   if (btnElement) btnElement.classList.add("active");
+
+  // Cập nhật giá hiển thị (size + topping)
+  updatePopupPrice();
 }
 
 // Thay đổi số lượng trong popup (cho bánh/topping)
@@ -336,6 +354,33 @@ function changePopupQty(delta) {
   // Cập nhật giá hiển thị theo số lượng
   const totalPrice = selectedPrice * popupQuantity;
   document.getElementById("price-value").innerText = totalPrice.toLocaleString("vi-VN");
+}
+
+// Toggle topping (bật/tắt)
+function toggleTopping(btnElement) {
+  const name = btnElement.dataset.name;
+  const price = parseInt(btnElement.dataset.price);
+
+  const idx = selectedToppings.findIndex((t) => t.name === name);
+  if (idx !== -1) {
+    // Bỏ chọn
+    selectedToppings.splice(idx, 1);
+    btnElement.classList.remove("active");
+  } else {
+    // Chọn
+    selectedToppings.push({ name, price });
+    btnElement.classList.add("active");
+  }
+
+  // Cập nhật giá hiển thị
+  updatePopupPrice();
+}
+
+// Cập nhật giá hiển thị trên popup (đồ uống: size + topping)
+function updatePopupPrice() {
+  const toppingTotal = selectedToppings.reduce((sum, t) => sum + t.price, 0);
+  const total = selectedPrice + toppingTotal;
+  document.getElementById("price-value").innerText = total.toLocaleString("vi-VN");
 }
 
 // Chọn lượng đường / đá
@@ -396,15 +441,21 @@ function addToCart() {
   const noteEl = document.getElementById("popupNote");
   const note = noteEl ? noteEl.value.trim() : "";
 
-  // Kiểm tra sản phẩm đã tồn tại chưa (cùng tên + size + đường + đá + ghi chú)
+  // Kiểm tra sản phẩm đã tồn tại chưa (cùng tên + size + đường + đá + topping + ghi chú)
+  const toppingKey = isFood ? "" : selectedToppings.map((t) => t.name).sort().join(",");
   const existIndex = cart.findIndex(
     (item) =>
       item.name === currentProduct.name &&
       item.size === selectedSize &&
       item.sugar === (isFood ? "" : selectedSugar) &&
       item.ice === (isFood ? "" : selectedIce) &&
+      (item.toppings || []).map((t) => t.name).sort().join(",") === toppingKey &&
       item.note === note,
   );
+
+  // Tính giá đơn vị (size + topping)
+  const toppingTotal = selectedToppings.reduce((sum, t) => sum + t.price, 0);
+  const unitPrice = selectedPrice + toppingTotal;
 
   if (existIndex !== -1) {
     // Nếu đã có (cùng tùy chọn) thì tăng số lượng
@@ -415,9 +466,10 @@ function addToCart() {
       name: currentProduct.name,
       image: currentProduct.img,
       size: selectedSize,
-      price: selectedPrice,
+      price: unitPrice,
       sugar: isFood ? "" : selectedSugar,
       ice: isFood ? "" : selectedIce,
+      toppings: isFood ? [] : [...selectedToppings],
       note: note,
       quantity: isFood ? popupQuantity : 1,
     });
@@ -608,6 +660,7 @@ function showOrderHistoryPopup() {
       let itemsHTML = "";
       order.items.forEach((item) => {
         const itemTotal = item.price * item.quantity;
+        const toppingNames = (item.toppings && item.toppings.length > 0) ? item.toppings.map(t => t.name).join(", ") : "";
         itemsHTML +=
           '<div class="order-card-item">' +
           '<span class="order-card-item-name">' +
@@ -616,6 +669,7 @@ function showOrderHistoryPopup() {
           item.quantity +
           "</span>" +
           (item.size !== "Mặc định" ? '<span class="order-card-item-detail">Size ' + item.size + "</span>" : "") +
+          (toppingNames ? '<span class="order-card-item-detail">Topping: ' + toppingNames + "</span>" : "") +
           '<span class="order-card-item-price">' +
           itemTotal.toLocaleString("vi-VN") +
           "đ</span>" +

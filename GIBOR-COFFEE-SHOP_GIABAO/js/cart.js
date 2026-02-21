@@ -93,6 +93,9 @@ function renderCart() {
     const iceText = item.ice ? `Đá: ${item.ice}` : "";
     const noteText = item.note ? `📝 ${item.note}` : "";
     const isFood = item.size === "Mặc định";
+    const toppingText = (item.toppings && item.toppings.length > 0)
+      ? `Topping: ${item.toppings.map(t => t.name).join(", ")}`
+      : "";
 
     html += `
       <tr>
@@ -102,6 +105,7 @@ function renderCart() {
             <div class="cart-product-info">
               <span class="cart-product-name">${item.name}</span>
               ${!isFood ? `<span class="cart-product-options">🍬 ${sugarText} &nbsp;|&nbsp; 🧊 ${iceText}</span>` : ""}
+              ${toppingText ? `<span class="cart-product-options">🧁 ${toppingText}</span>` : ""}
               ${noteText ? `<span class="cart-product-note">${noteText}</span>` : ""}
             </div>
           </div>
