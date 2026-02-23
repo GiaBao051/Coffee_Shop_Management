@@ -19,7 +19,7 @@ LOG ON
 	FILEGROWTH = 10%
 )
 GO
---Update-
+--Update--
 
 -- Sử dụng cơ sở dữ liệu --
 USE QuanLyChuoiCaPhe
