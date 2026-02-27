@@ -8,9 +8,9 @@
 
 **GIBOR Coffee** là đồ án môn học xây dựng website thương mại điện tử cho một quán cà phê. Website cung cấp đầy đủ chức năng từ xem menu, đặt hàng, quản lý giỏ hàng đến thanh toán, cùng hệ thống xác thực người dùng tích hợp Firebase.
 
-- **Địa chỉ quán:** 140 Lê Trọng Tấn, Tân Phú, TP.HCM  
-- **Giờ mở cửa:** 07:00 – 22:00 hàng ngày  
-- **Năm thực hiện:** 2026  
+- **Địa chỉ quán:** 140 Lê Trọng Tấn, Tân Phú, TP.HCM
+- **Giờ mở cửa:** 07:00 – 22:00 hàng ngày
+- **Năm thực hiện:** 2026
 
 ---
 
@@ -21,7 +21,8 @@
 | Trần Gia Bảo | Frontend Developer – Giao diện & Logic chính |
 | Nguyễn Thế Anh | Firebase Integration – Xác thực & Cấu hình backend |
 
-> *Team 3 – Đồ án Kỳ 4 (2025–2026)*
+> *Team 3 – Đồ án Kỳ 4 (2025–2026)*  
+> *Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT)*
 
 ---
 
@@ -63,11 +64,15 @@ GIBOR-COFFEE-SHOP_GIABAO/
 │   ├── about.js        # Logic trang giới thiệu
 │   └── contact.js      # Logic trang liên hệ
 │
-└── images/
-    ├── logo/           # Logo thương hiệu
-    ├── banner/         # Ảnh banner trang chủ
-    ├── menu/           # Ảnh sản phẩm menu
-    └── about/          # Ảnh trang giới thiệu
+├── images/
+│   ├── logo/           # Logo thương hiệu
+│   ├── banner/         # Ảnh banner trang chủ
+│   ├── menu/           # Ảnh sản phẩm menu
+│   └── about/          # Ảnh trang giới thiệu
+│
+└── DataBase/
+    ├── DB_DA_QuanLyQuanCF.sql  # Script tạo CSDL
+    └── Diagram.drawio          # Sơ đồ quan hệ thực thể
 ```
 
 ---
@@ -83,7 +88,7 @@ GIBOR-COFFEE-SHOP_GIABAO/
 
 ### ☕ Menu
 - Hiển thị danh sách sản phẩm theo danh mục
-- Chức năng thêm sản phẩm vào giỏ hàng
+- Thêm sản phẩm vào giỏ hàng trực tiếp
 
 ### 🛒 Giỏ hàng & Thanh toán
 - Quản lý giỏ hàng với localStorage
@@ -95,14 +100,14 @@ GIBOR-COFFEE-SHOP_GIABAO/
 - Đăng ký tài khoản với email & mật khẩu
 - Đăng nhập bằng email/mật khẩu (localStorage) hoặc Google (Firebase)
 - Dropdown thông tin tài khoản trên header
-- Hệ thống điểm tích lũy (PointsManager)
+- Hệ thống điểm tích lũy
 - Xem lịch sử đơn hàng
 
 ### 🎨 Giao diện & UX
-- **Dark Mode** — chuyển đổi sáng/tối, lưu tùy chọn
+- **Dark Mode** — chuyển đổi sáng/tối, lưu tùy chọn vào localStorage
 - **Responsive Design** — tương thích desktop, tablet, mobile
 - **Hamburger Menu** — điều hướng trên thiết bị di động
-- **Sticky Header** — thanh điều hướng cố định khi cuộn
+- **Sticky Header** — thanh điều hướng cố định khi cuộn trang
 - Font chữ: *Montserrat*, *Playfair Display*, *Mrs Saint Delafield*
 - Icon: Font Awesome 6.5.1
 
@@ -117,17 +122,18 @@ GIBOR-COFFEE-SHOP_GIABAO/
 | JavaScript (ES6+) | Logic frontend, DOM manipulation |
 | Firebase Auth v10 | Xác thực người dùng qua Google OAuth |
 | localStorage | Lưu trữ dữ liệu người dùng, giỏ hàng, theme |
-| Font Awesome 6.5.1 | Bộ icon |
-| Google Fonts | Typography |
-| Google Maps Embed | Bản đồ vị trí quán |
+| Font Awesome 6.5.1 | Bộ icon giao diện |
+| Google Fonts | Typography (Montserrat, Playfair Display) |
+| Google Maps Embed API | Bản đồ vị trí quán |
 
 ---
 
 ## 🗄️ Cơ sở dữ liệu
 
-File SQL: [`DataBase/DB_DA_QuanLyQuanCF.sql`](DataBase/DB_DA_QuanLyQuanCF.sql)
-
-Sơ đồ CSDL: [`DataBase/Diagram.drawio`](DataBase/Diagram.drawio)
+| File | Mô tả |
+|---|---|
+| `DataBase/DB_DA_QuanLyQuanCF.sql` | Script tạo và khởi tạo dữ liệu CSDL |
+| `DataBase/Diagram.drawio` | Sơ đồ quan hệ thực thể (ERD) |
 
 ---
 
@@ -136,30 +142,28 @@ Sơ đồ CSDL: [`DataBase/Diagram.drawio`](DataBase/Diagram.drawio)
 Dự án là website tĩnh thuần HTML/CSS/JS, **không cần cài đặt** phụ thuộc nào.
 
 ### Cách 1: Mở trực tiếp
-```
-Mở file index.html bằng trình duyệt web (Chrome/Edge/Firefox)
-```
+Mở file `index.html` bằng trình duyệt web (Chrome / Edge / Firefox).
 
-### Cách 2: Dùng Live Server (khuyến nghị)
+### Cách 2: Dùng Live Server *(khuyến nghị)*
 1. Cài extension **Live Server** trong VS Code
 2. Click chuột phải vào `index.html` → **Open with Live Server**
 3. Trình duyệt tự động mở tại `http://127.0.0.1:5500`
 
-> ⚠️ **Lưu ý:** Chức năng đăng nhập Google (Firebase) yêu cầu chạy qua server (không thể mở file:// trực tiếp).
+> ⚠️ **Lưu ý:** Chức năng đăng nhập Google (Firebase) yêu cầu chạy qua server HTTP. Không hoạt động khi mở trực tiếp bằng `file://`.
 
 ---
 
 ## 📱 Hỗ trợ thiết bị
 
-| Thiết bị | Trạng thái |
-|---|---|
-| Desktop (≥ 1024px) | ✅ Đầy đủ |
-| Tablet (768px – 1023px) | ✅ Đầy đủ |
-| Mobile (< 768px) | ✅ Đầy đủ |
+| Thiết bị | Kích thước | Trạng thái |
+|---|---|---|
+| Desktop | ≥ 1024px | ✅ Đầy đủ |
+| Tablet | 768px – 1023px | ✅ Đầy đủ |
+| Mobile | < 768px | ✅ Đầy đủ |
 
 ---
 
-## 📄 Giấy phép
+## 📄 Bản quyền
 
-© 2026 **GIBOR COFFEE**. Đồ án học thuật — Team 4, Kỳ 4 (2025–2026).  
+© 2026 **GIBOR COFFEE**. Đồ án học thuật — Team 3, Kỳ 4 (2025–2026).  
 Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT).

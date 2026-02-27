@@ -1,6 +1,6 @@
 -- Đồ án quản lý chuỗi cửa hàng cà phê --
 
---- Tạo cơ sở dữ liệu ----
+---- Tạo cơ sở dữ liệu ----
 CREATE DATABASE QuanLyChuoiCaPhe
 ON PRIMARY
 (
@@ -19,7 +19,7 @@ LOG ON
 	FILEGROWTH = 10%
 )
 GO
---Update
+--Update----
 
 -- Sử dụng cơ sở dữ liệu --
 USE QuanLyChuoiCaPhe
