@@ -10,16 +10,18 @@
 
 - **Địa chỉ quán:** 140 Lê Trọng Tấn, Tân Phú, TP.HCM
 - **Giờ mở cửa:** 07:00 – 22:00 hàng ngày
-- **Năm thực hiện:** 2026
+- **Năm thực hiện:** 2025 – 2026
 
 ---
 
 ## 👥 Thành viên nhóm
 
-| Thành viên | Vai trò |
-|---|---|
-| Trần Gia Bảo | Frontend Developer – Giao diện & Logic chính |
-| Nguyễn Thế Anh | Firebase Integration – Xác thực & Cấu hình backend |
+| STT | Thành viên | Vai trò | Phụ trách chính |
+|:---:|---|---|---|
+| 1 | **Trần Gia Bảo** | Frontend Developer – Leader | Trang chủ, CSS chung, logic chung (`main.js`), trang giới thiệu, trang liên hệ, giao diện dark mode |
+| 2 | **Trần Dương Gia Bảo** | Frontend Developer | Quản lý dữ liệu & người dùng (`data.js`), giỏ hàng (`cart.js`), trang thanh toán (`payment.html`, `payment.js`), hệ thống điểm tích lũy |
+| 3 | **Nguyễn Thế Anh** | Firebase Integration | Đăng nhập / Đăng ký (`login.html`, `register.html`, `loginregister.js`), cấu hình Firebase (`firebase.js`) |
+| 4 | **Nguyễn Hoàng Bảo** | Frontend Developer | Trang menu (`menu.html`), hệ thống popup & thông báo (`popup.css`) |
 
 > *Team 3 – Đồ án Kỳ 4 (2025–2026)*  
 > *Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT)*
@@ -30,80 +32,87 @@
 
 ```
 GIBOR-COFFEE-SHOP_GIABAO/
-├── index.html          # Trang chủ
-├── menu.html           # Trang menu sản phẩm
-├── about.html          # Giới thiệu về quán
-├── contact.html        # Liên hệ
-├── cart.html           # Giỏ hàng
-├── login.html          # Đăng nhập
-├── register.html       # Đăng ký tài khoản
-├── payment.html        # Thanh toán
+├── index.html              # Trang chủ                    [Trần Gia Bảo]
+├── menu.html               # Trang menu sản phẩm          [Nguyễn Hoàng Bảo]
+├── about.html              # Giới thiệu về quán           [Trần Gia Bảo]
+├── contact.html            # Liên hệ                      [Trần Gia Bảo]
+├── cart.html               # Giỏ hàng                     [Trần Dương Gia Bảo]
+├── login.html              # Đăng nhập                    [Nguyễn Thế Anh]
+├── register.html           # Đăng ký tài khoản            [Nguyễn Thế Anh]
+├── payment.html            # Thanh toán                   [Trần Dương Gia Bảo]
 │
 ├── css/
-│   ├── style.css       # CSS chung toàn trang
-│   ├── home.css        # Trang chủ
-│   ├── menu.css        # Trang menu
-│   ├── about.css       # Trang giới thiệu
-│   ├── contact.css     # Trang liên hệ
-│   ├── cart.css        # Giỏ hàng
-│   ├── login.css       # Đăng nhập
-│   ├── register.css    # Đăng ký
-│   ├── payment.css     # Thanh toán
-│   ├── popup.css       # Popup thông báo
-│   └── mobile.css      # Responsive cho mobile
+│   ├── style.css           # CSS chung                    [Trần Gia Bảo + Trần Dương Gia Bảo]
+│   ├── home.css            # Trang chủ                    [Trần Gia Bảo]
+│   ├── menu.css            # Trang menu                   [Nguyễn Hoàng Bảo]
+│   ├── about.css           # Trang giới thiệu             [Trần Gia Bảo]
+│   ├── contact.css         # Trang liên hệ                [Trần Gia Bảo]
+│   ├── cart.css            # Giỏ hàng                     [Trần Dương Gia Bảo]
+│   ├── login.css           # Đăng nhập                    [Nguyễn Thế Anh]
+│   ├── register.css        # Đăng ký                      [Nguyễn Thế Anh]
+│   ├── payment.css         # Thanh toán                   [Trần Gia Bảo + Trần Dương Gia Bảo]
+│   ├── popup.css           # Popup & thông báo            [Nguyễn Hoàng Bảo]
+│   └── mobile.css          # Responsive mobile            [Trần Gia Bảo]
 │
 ├── js/
-│   ├── data.js         # Quản lý người dùng & dữ liệu (localStorage)
-│   ├── firebase.js     # Cấu hình & khởi tạo Firebase
-│   ├── auth.js         # Xác thực người dùng
-│   ├── loginregister.js# Xử lý đăng nhập / đăng ký
-│   ├── cart.js         # Quản lý giỏ hàng
-│   ├── payment.js      # Xử lý thanh toán
-│   ├── main.js         # Logic dùng chung (navbar, dark mode, preloader)
-│   ├── mobile.js       # Hành vi responsive mobile
-│   ├── about.js        # Logic trang giới thiệu
-│   └── contact.js      # Logic trang liên hệ
+│   ├── data.js             # Quản lý dữ liệu & tài khoản [Trần Dương Gia Bảo]
+│   ├── firebase.js         # Cấu hình Firebase            [Nguyễn Thế Anh]
+│   ├── auth.js             # Xác thực người dùng
+│   ├── loginregister.js    # Logic đăng nhập / đăng ký    [Nguyễn Thế Anh]
+│   ├── cart.js             # Logic giỏ hàng               [Trần Dương Gia Bảo]
+│   ├── payment.js          # Logic thanh toán             [Trần Dương Gia Bảo + Trần Gia Bảo]
+│   ├── main.js             # Logic chung toàn trang       [Trần Gia Bảo + Nguyễn Hoàng Bảo + Trần Dương Gia Bảo]
+│   ├── mobile.js           # Hành vi responsive mobile    [Trần Gia Bảo]
+│   ├── about.js            # Logic trang giới thiệu       [Trần Gia Bảo]
+│   └── contact.js          # Logic trang liên hệ          [Trần Gia Bảo]
 │
 ├── images/
-│   ├── logo/           # Logo thương hiệu
-│   ├── banner/         # Ảnh banner trang chủ
-│   ├── menu/           # Ảnh sản phẩm menu
-│   └── about/          # Ảnh trang giới thiệu
+│   ├── logo/               # Logo thương hiệu
+│   ├── banner/             # Ảnh banner trang chủ
+│   ├── menu/               # Ảnh sản phẩm menu
+│   └── about/              # Ảnh trang giới thiệu
 │
 └── DataBase/
-    ├── DB_DA_QuanLyQuanCF.sql  # Script tạo CSDL
-    └── Diagram.drawio          # Sơ đồ quan hệ thực thể
+    ├── DB_DA_QuanLyQuanCF.sql   # Script tạo CSDL
+    └── Diagram.drawio           # Sơ đồ quan hệ thực thể (ERD)
 ```
 
 ---
 
 ## ✨ Tính năng chính
 
-### 🏠 Trang chủ
+### 🏠 Trang chủ *(Trần Gia Bảo)*
 - Màn hình loading (preloader) với logo thương hiệu
 - Banner hero với call-to-action đặt hàng
-- Giới thiệu ngắn về triết lý cà phê nguyên bản
+- Giới thiệu triết lý cà phê nguyên bản
 - Banner khuyến mãi (Mua 2 Tặng 1 Bạc Xỉu)
 - Tích hợp Google Maps vị trí quán
 
-### ☕ Menu
+### ☕ Menu *(Nguyễn Hoàng Bảo)*
 - Hiển thị danh sách sản phẩm theo danh mục
 - Thêm sản phẩm vào giỏ hàng trực tiếp
 
-### 🛒 Giỏ hàng & Thanh toán
-- Quản lý giỏ hàng với localStorage
+### 🛒 Giỏ hàng *(Trần Dương Gia Bảo)*
+- Quản lý giỏ hàng lưu trữ bằng localStorage
 - Cập nhật số lượng, xóa sản phẩm
 - Hiển thị tổng tiền theo thời gian thực
-- Quy trình thanh toán hoàn chỉnh
 
-### 👤 Tài khoản người dùng
+### 💳 Thanh toán *(Trần Dương Gia Bảo + Trần Gia Bảo)*
+- Quy trình thanh toán hoàn chỉnh
+- Xác nhận đơn hàng và lưu lịch sử
+
+### 👤 Tài khoản người dùng *(Nguyễn Thế Anh + Trần Dương Gia Bảo)*
 - Đăng ký tài khoản với email & mật khẩu
 - Đăng nhập bằng email/mật khẩu (localStorage) hoặc Google (Firebase)
 - Dropdown thông tin tài khoản trên header
 - Hệ thống điểm tích lũy
 - Xem lịch sử đơn hàng
 
-### 🎨 Giao diện & UX
+### 🔔 Hệ thống thông báo Popup *(Nguyễn Hoàng Bảo)*
+- Popup thông báo thành công / lỗi
+- Xác nhận hành động (xóa, đặt hàng, ...)
+
+### 🎨 Giao diện & UX *(Trần Gia Bảo)*
 - **Dark Mode** — chuyển đổi sáng/tối, lưu tùy chọn vào localStorage
 - **Responsive Design** — tương thích desktop, tablet, mobile
 - **Hamburger Menu** — điều hướng trên thiết bị di động
