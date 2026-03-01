@@ -8,7 +8,8 @@
 
 **GIBOR Coffee** là đồ án môn học xây dựng website thương mại điện tử cho một quán cà phê. Website cung cấp đầy đủ chức năng từ xem menu, đặt hàng, quản lý giỏ hàng đến thanh toán, cùng hệ thống xác thực người dùng tích hợp Firebase.
 
-- **Địa chỉ quán:** 140 Lê Trọng Tấn, Tân Phú, TP.HCM
+- **Địa chỉ quán:** 140 Lê Trọng Tấn, Tân Phú, TP.HCM  
+- **Hệ thống chi nhánh:** 15 chi nhánh trên toàn quốc (TP.HCM, Hà Nội, Đà Nẵng)
 - **Giờ mở cửa:** 07:00 – 22:00 hàng ngày
 - **Năm thực hiện:** 2025 – 2026
 
