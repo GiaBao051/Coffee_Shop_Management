@@ -604,6 +604,32 @@ body.dark .checkout-item-price {
     margin-bottom: 4px;
   }
 
+  .cart-table td[data-label="Xóa"] {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .cart-table td[data-label="Xóa"]::before {
+    display: none;
+  }
+
+  .cart-table td[data-label="Xóa"] .btn-remove {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1;
+  }
+
   .cart-product {
     flex-direction: row;
     gap: 10px;
