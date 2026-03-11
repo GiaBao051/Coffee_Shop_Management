@@ -6,6 +6,7 @@
 
   // ===== CONSTANTS =====
   const MOBILE_BP = 768;
+  const IS_ANDROID = /Android/i.test(navigator.userAgent || '');
   
   // Page detection
   const path = location.pathname.replace(/\\/g, '/');
@@ -25,6 +26,10 @@
   }
 
   function setBodyScrollLock(locked) {
+    if (IS_ANDROID) {
+      document.body.classList.remove('m-lock-scroll');
+      return;
+    }
     document.body.classList.toggle('m-lock-scroll', !!locked);
   }
 
@@ -392,6 +397,9 @@
 
   // ===== INIT =====
   function init() {
+    // Ensure stale lock class is never carried across history restores.
+    setBodyScrollLock(false);
+
     let mobileMode = isMobile();
 
     syncHeaderHeightVar();
