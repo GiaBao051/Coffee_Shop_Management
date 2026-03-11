@@ -572,13 +572,14 @@
   /* Category tabs — sticky scrollable */
   .m-category-tabs {
     position: fixed;
-    top: calc(var(--m-header-h) + 4px);
+    top: var(--m-header-h);
     left: 0;
     right: 0;
     width: 100%;
     z-index: 998;
     background: var(--m-bg);
     border-bottom: 1px solid #ede3d9;
+    margin-top: 0;
     display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
