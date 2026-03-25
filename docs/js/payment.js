@@ -47,10 +47,10 @@ function renderOrderSummary() {
 
   if (cart.length === 0) {
     orderItems.innerHTML = `
-      <p style="text-align:center; opacity:0.6; padding:25px 0;">
-        <i class="fas fa-shopping-cart" style="font-size:30px; display:block; margin-bottom:8px;"></i>
-        Giỏ hàng trống
-      </p>`;
+      <div class="cart-empty-mini">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Giỏ hàng trống</p>
+      </div>`;
     updateTotals(0);
     return;
   }
@@ -66,7 +66,8 @@ function renderOrderSummary() {
           : [];
     const metaParts = [];
     if (comboItems.length > 0) metaParts.push("Gồm: " + comboItems.join(" + "));
-    if (item.size && item.size !== "Mặc định") metaParts.push("Size " + item.size);
+    if (item.size && item.size !== "Mặc định")
+      metaParts.push("Size " + item.size);
     if (item.sugar) metaParts.push("Đường " + item.sugar);
     if (item.ice) metaParts.push("Đá " + item.ice);
     if (item.toppings && item.toppings.length > 0) {
@@ -123,40 +124,31 @@ function updateTotals(subtotal) {
   shipEl.textContent =
     shippingFee === 0 && subtotal > 0 ? "Miễn phí" : formatPrice(shippingFee);
 
-  if (currentDiscount > 0 || isFreeShip) {
+  // Hiển thị giảm giá từ coupon
+  if (currentDiscount > 0) {
     discountRow.style.display = "flex";
-    if (isFreeShip && currentDiscount === 0) {
-      discountEl.textContent = "Miễn phí vận chuyển";
-    } else {
-      discountEl.textContent = "- " + formatPrice(currentDiscount);
-    }
+    discountEl.textContent = "- " + formatPrice(currentDiscount);
   } else {
+    // Ẩn dòng giảm giá nếu chỉ có freeship (đã thể hiện ở phí ship)
     discountRow.style.display = "none";
   }
 
-  // Hiển thị giảm giá từ điểm (trong points-section)
-  const pointsDiscountRow = document.getElementById("pointsDiscountRow");
-  const pointsDiscountEl = document.getElementById("pointsDiscountAmount");
-  if (pointsDiscountRow && pointsDiscountEl) {
-    if (pointsDiscount > 0) {
-      pointsDiscountRow.style.display = "flex";
-      pointsDiscountEl.textContent = "- " + formatPrice(pointsDiscount);
-    } else {
-      pointsDiscountRow.style.display = "none";
+  // Hiển thị giảm giá từ điểm (trong points-section và phần tính tiền)
+  [
+    { rowId: "pointsDiscountRow", elId: "pointsDiscountAmount" },
+    { rowId: "pointsDiscountCalcRow", elId: "pointsDiscountCalc" },
+  ].forEach(({ rowId, elId }) => {
+    const row = document.getElementById(rowId);
+    const el = document.getElementById(elId);
+    if (row && el) {
+      if (pointsDiscount > 0) {
+        row.style.display = "flex";
+        el.textContent = "- " + formatPrice(pointsDiscount);
+      } else {
+        row.style.display = "none";
+      }
     }
-  }
-
-  // Hiển thị giảm giá từ điểm (trong phần tính tiền - màu xanh)
-  const pCalcRow = document.getElementById("pointsDiscountCalcRow");
-  const pCalcEl = document.getElementById("pointsDiscountCalc");
-  if (pCalcRow && pCalcEl) {
-    if (pointsDiscount > 0) {
-      pCalcRow.style.display = "flex";
-      pCalcEl.textContent = "- " + formatPrice(pointsDiscount);
-    } else {
-      pCalcRow.style.display = "none";
-    }
-  }
+  });
 
   // Cập nhật điểm nhận được (chỉ tính trên tiền hàng, KHÔNG tính phí ship)
   const productTotal = Math.max(0, subtotal - currentDiscount - pointsDiscount);
@@ -224,11 +216,11 @@ function initPoints() {
     !UserManager.isLoggedIn() ||
     typeof PointsManager === "undefined"
   ) {
-    section.style.display = "none";
+    section.classList.add("hidden");
     return;
   }
 
-  section.style.display = "block";
+  section.classList.remove("hidden");
 
   // Hiển điểm hiện tại
   const currentPoints = PointsManager.getPoints();
@@ -334,17 +326,17 @@ function selectPayment(method) {
   const bankInfo = document.getElementById("bankingInfo");
   const btnPlace = document.getElementById("btnPlaceOrder");
 
+  if (bankInfo) {
+    bankInfo.style.display = method === "banking" ? "block" : "none";
+  }
+
   if (method === "banking") {
-    // Hiện QR thanh toán
-    if (bankInfo) bankInfo.style.display = "block";
     // Đổi text nút thành "ĐẶ HÀNG"
     if (btnPlace)
       btnPlace.innerHTML = '<i class="fa-solid fa-credit-card"></i> ĐẶT HÀNG';
     // Cập nhật QR code với số tiền hiện tại
     updateQRCode();
   } else {
-    // Ẩn QR thanh toán khi chọn COD
-    if (bankInfo) bankInfo.style.display = "none";
     // Đổi text nút về "ĐẶT HÀNG"
     if (btnPlace)
       btnPlace.innerHTML = '<i class="fa-solid fa-check"></i> ĐẶT HÀNG';
@@ -352,7 +344,28 @@ function selectPayment(method) {
 }
 
 // ===== DỮ LIỆU CHI NHÁNH =====
-const BRANCHES = {
+const BRANCHES = (() => {
+  if (
+    typeof window !== "undefined" &&
+    window.GIBOR_BRANCH_UTILS &&
+    typeof window.GIBOR_BRANCH_UTILS.getByCity === "function"
+  ) {
+    const mapCityBranches = (cityCode) =>
+      window.GIBOR_BRANCH_UTILS.getByCity(cityCode).map((branch) => ({
+        id: branch.id,
+        name: branch.name,
+        address: branch.address,
+      }));
+
+    return {
+      hcm: mapCityBranches("hcm"),
+      hn: mapCityBranches("hn"),
+      dn: mapCityBranches("dn"),
+    };
+  }
+
+  // Fallback cũ để tránh ảnh hưởng checkout nếu file dữ liệu chưa được include.
+  return {
   hcm: [
     {
       id: "hcm1",
@@ -434,7 +447,8 @@ const BRANCHES = {
       address: "55 Cách Mạng Tháng Tám, Khuê Trung, Cẩm Lệ, Đà Nẵng",
     },
   ],
-};
+  };
+})();
 
 let selectedBranch = null;
 
@@ -648,6 +662,13 @@ function showConfirmPayment() {
 
     overlay.classList.add("show");
 
+    // Trên mobile, tạo lại QR sau khi popup đã hiển thị để tránh bị hoãn tải ảnh.
+    if (selectedPayment === "banking") {
+      requestAnimationFrame(() => {
+        setTimeout(updateQRCode, 60);
+      });
+    }
+
     const handleOk = () => {
       overlay.classList.remove("show");
       btnOk.removeEventListener("click", handleOk);
@@ -657,6 +678,11 @@ function showConfirmPayment() {
 
     const handleCancel = () => {
       overlay.classList.remove("show");
+      // Bấm hủy thì cập nhật lại số tiền hiện tại và tạo lại QR mới
+      const cart = getCart();
+      const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+      updateTotals(subtotal);
+      updateQRCode();
       btnOk.removeEventListener("click", handleOk);
       btnCancel.removeEventListener("click", handleCancel);
       resolve(false);
@@ -680,6 +706,11 @@ async function placeOrder() {
 
   // Nếu cần xác nhận thanh toán (chọn Banking)
   if (validationResult === "NEED_CONFIRM") {
+    // Mỗi lần bấm đặt hàng với banking: cập nhật lại tổng và tạo QR mới
+    const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    updateTotals(subtotal);
+    updateQRCode();
+
     const confirmed = await showConfirmPayment();
     if (!confirmed) {
       showToast("Vui lòng hoàn tất thanh toán trước khi đặt hàng!");
@@ -1456,39 +1487,105 @@ const CONFIG = {
 function updateQRCode() {
   const loader = document.getElementById("qrLoader");
   const qrImg = document.getElementById("qrImage");
+  const amountEl = document.getElementById("displayAmount");
+  const descEl = document.getElementById("displayDesc");
+  const totalEl = document.getElementById("grandTotal");
+
+  if (!loader || !qrImg || !amountEl || !descEl || !totalEl) return;
 
   // 1. Lấy số tiền từ giao diện
-  let totalStr = document.getElementById("grandTotal").innerText;
+  let totalStr = totalEl.innerText;
   let amount = totalStr.replace(/[^0-9]/g, ""); // Chỉ lấy số
+  const amountNum = parseInt(amount || "0", 10);
 
   // 2. Tạo nội dung chuyển khoản
   let orderId = "GB" + Math.floor(1000 + Math.random() * 9000);
   let desc = `GIBOR ${orderId}`;
 
   // Cập nhật text hiển thị
-  document.getElementById("displayAmount").innerText =
-    parseInt(amount).toLocaleString() + "đ";
-  document.getElementById("displayDesc").innerText = desc;
+  amountEl.innerText = amountNum.toLocaleString("vi-VN") + "đ";
+  descEl.innerText = desc;
+
+  if (amountNum <= 0) {
+    loader.style.display = "none";
+    showToast("Không thể tạo QR: tổng tiền không hợp lệ.");
+    return;
+  }
 
   // 3. Gọi API VietQR
   // Cấu trúc: https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-<TEMPLATE>.png?amount=<AMOUNT>&addInfo=<DESCRIPTION>&accountName=<NAME>
-  const qrUrl = `https://img.vietqr.io/image/${CONFIG.BANK_ID}-${CONFIG.ACC_NO}-${CONFIG.TEMPLATE}.png?amount=${amount}&addInfo=${encodeURIComponent(desc)}&accountName=${encodeURIComponent(CONFIG.ACC_NAME)}`;
+  const amountParam = String(amountNum);
+  const base = "https://img.vietqr.io/image";
+  const bankIds = [CONFIG.BANK_ID, "MBBANK"];
+  const templates = [CONFIG.TEMPLATE, "compact2", "compact"];
+  const builtUrls = [];
+
+  bankIds.forEach((bankId) => {
+    templates.forEach((template) => {
+      builtUrls.push(
+        `${base}/${bankId}-${CONFIG.ACC_NO}-${template}.png?amount=${amountParam}&addInfo=${encodeURIComponent(desc)}&accountName=${encodeURIComponent(CONFIG.ACC_NAME)}&t=${Date.now()}`,
+      );
+    });
+  });
+
+  const qrUrls = Array.from(new Set(builtUrls));
+
+  // Ảnh QR nằm trong popup nên cần tải ngay, tránh bị mobile lazy-load trì hoãn.
+  qrImg.setAttribute("loading", "eager");
+  qrImg.setAttribute("fetchpriority", "high");
+  qrImg.setAttribute("decoding", "async");
 
   // Hiển thị loader trong khi tải ảnh
   qrImg.style.display = "none";
   loader.style.display = "block";
 
-  qrImg.src = qrUrl;
+  let handled = false;
+  let timeoutId = null;
+
+  const cleanup = () => {
+    qrImg.onload = null;
+    qrImg.onerror = null;
+    if (timeoutId) clearTimeout(timeoutId);
+  };
+
+  const showLoadFailed = () => {
+    showToast("Không tải được mã QR. Vui lòng thử lại sau.");
+  };
 
   qrImg.onload = function () {
+    if (handled) return;
+    handled = true;
+    cleanup();
     loader.style.display = "none";
     qrImg.style.display = "block";
   };
 
+  let currentIndex = 0;
   qrImg.onerror = function () {
+    if (handled) return;
+
+    currentIndex += 1;
+    if (currentIndex < qrUrls.length) {
+      qrImg.src = qrUrls[currentIndex];
+      return;
+    }
+
+    handled = true;
+    cleanup();
     loader.style.display = "none";
-    alert("Không thể tải mã QR. Vui lòng kiểm tra kết nối mạng.");
+    showLoadFailed();
   };
+
+  timeoutId = setTimeout(() => {
+    if (handled) return;
+    handled = true;
+    cleanup();
+    loader.style.display = "none";
+    showLoadFailed();
+  }, 10000);
+
+  // Gắn sự kiện trước rồi mới set src để tránh mất onload khi ảnh cache tải quá nhanh
+  qrImg.src = qrUrls[0];
 }
 
 /* 

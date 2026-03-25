@@ -39,9 +39,26 @@ const UserManager = {
   register({ lastName, firstName, email, phone, password }) {
     const users = this.getUsers();
 
-    // Kiểm tra email đã tồn tại chưa
-    if (users.find((u) => u.email === email)) {
-      return { success: false, message: "Email đã được dùng để đăng ký." };
+    // Kiểm tra email đã tồn tại chưa (bất kể đăng ký bằng cách nào)
+    const existingUser = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    if (existingUser) {
+      // Kiểm tra xem tài khoản này đăng ký bằng phương thức nào
+      if (existingUser.provider === "google") {
+        return { 
+          success: false, 
+          message: "Email này đã được đăng ký bằng tài khoản Google. Vui lòng đăng nhập bằng Google." 
+        };
+      } else if (existingUser.provider === "github") {
+        return { 
+          success: false, 
+          message: "Email này đã được đăng ký bằng tài khoản GitHub. Vui lòng đăng nhập bằng GitHub." 
+        };
+      } else {
+        return { 
+          success: false, 
+          message: "Email đã được dùng để đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác." 
+        };
+      }
     }
 
     // Kiểm tra mật khẩu tối thiểu 6 ký tự
@@ -60,6 +77,7 @@ const UserManager = {
       email: email,
       phone: phone,
       password: password,
+      provider: "email", // Đánh dấu đăng ký bằng email/password
       createdAt: new Date().toISOString(),
     };
 
@@ -221,21 +239,66 @@ const UserManager = {
   },
 
   /**
+   * Đặt lại mật khẩu (dành cho Quên mật khẩu)
+   * @param {string} email - Email của tài khoản
+   * @param {string} newPassword - Mật khẩu mới
+   * @returns {Object} { success, message }
+   */
+  resetPassword(email, newPassword) {
+    const users = this.getUsers();
+    const idx = users.findIndex((u) => u.email === email);
+    if (idx === -1)
+      return { success: false, message: "Email không tồn tại trong hệ thống." };
+
+    if (newPassword.length < 6) {
+      return {
+        success: false,
+        message: "Mật khẩu mới phải có ít nhất 6 ký tự.",
+      };
+    }
+
+    users[idx].password = newPassword;
+    this.saveUsers(users);
+
+    return { success: true, message: "Lấy lại mật khẩu thành công!" };
+  },
+
+  /**
    * Đăng nhập/Đăng ký bằng Google (Firebase Auth)
-   * Nếu email đã tồn tại trong localStorage → đăng nhập luôn
-   * Nếu chưa → tạo tài khoản mới từ thông tin Google
+   * Kiểm tra email đã tồn tại chưa:
+   * - Nếu đã có trong localStorage → đăng nhập (nhưng kiểm tra provider)
+   * - Nếu chưa có → tạo tài khoản mới
    * @param {Object} googleUser - { displayName, email, photoURL, uid }
    * @returns {Object} { success, message, user, isNew }
    */
   loginWithGoogle(googleUser) {
     const users = this.getUsers();
-    let user = users.find((u) => u.email === googleUser.email);
+    let user = users.find((u) => u.email.toLowerCase() === googleUser.email.toLowerCase());
 
     if (user) {
-      // Đã có tài khoản → đăng nhập
+      // Email đã tồn tại - kiểm tra provider
+      if (user.provider === "email" && !user.googleUid) {
+        // Tài khoản đã đăng ký bằng email/password thông thường
+        return {
+          success: false,
+          message: "Email này đã được đăng ký bằng tài khoản thông thường. Vui lòng đăng nhập bằng email và mật khẩu.",
+          user: null,
+          isNew: false,
+        };
+      }
+      
+      // Đã có tài khoản Google hoặc đã liên kết → đăng nhập
       user.googleUid = googleUser.uid;
       user.photoURL = googleUser.photoURL || user.photoURL;
-      this.saveUsers(users);
+      user.provider = user.provider || "google"; // Cập nhật provider nếu chưa có
+      
+      // Cập nhật lại thông tin
+      const idx = users.findIndex((u) => u.id === user.id);
+      if (idx !== -1) {
+        users[idx] = user;
+        this.saveUsers(users);
+      }
+      
       this.setCurrentUser(user);
       return {
         success: true,
@@ -245,7 +308,7 @@ const UserManager = {
       };
     }
 
-    // Chưa có → tạo mới
+    // Chưa có tài khoản → tạo mới
     const nameParts = (googleUser.displayName || "Google User")
       .trim()
       .split(" ");
@@ -259,10 +322,86 @@ const UserManager = {
       displayName: googleUser.displayName || "Google User",
       email: googleUser.email,
       phone: "",
-      password: "",
+      password: "", // Không có password cho tài khoản Google
       googleUid: googleUser.uid,
       photoURL: googleUser.photoURL || "",
       provider: "google",
+      createdAt: new Date().toISOString(),
+    };
+
+    users.push(newUser);
+    this.saveUsers(users);
+    this.setCurrentUser(newUser);
+
+    return {
+      success: true,
+      message: "Đăng ký thành công!",
+      user: newUser,
+      isNew: true,
+    };
+  },
+
+  /**
+   * Đăng nhập/đăng ký bằng GitHub (Firebase Auth)
+   * Kiểm tra email đã tồn tại chưa:
+   * - Nếu đã có trong localStorage → đăng nhập (nhưng kiểm tra provider)
+   * - Nếu chưa có → tạo tài khoản mới
+   */
+  loginWithGithub(githubUser) {
+    const users = this.getUsers();
+    let user = users.find((u) => u.email.toLowerCase() === githubUser.email.toLowerCase());
+
+    if (user) {
+      // Email đã tồn tại - kiểm tra provider
+      if (user.provider === "email" && !user.githubUid) {
+        // Tài khoản đã đăng ký bằng email/password thông thường
+        return {
+          success: false,
+          message: "Email này đã được đăng ký bằng tài khoản thông thường. Vui lòng đăng nhập bằng email và mật khẩu.",
+          user: null,
+          isNew: false,
+        };
+      }
+      
+      // Đã có tài khoản GitHub hoặc đã liên kết → đăng nhập
+      user.githubUid = githubUser.uid;
+      user.photoURL = githubUser.photoURL || user.photoURL;
+      user.provider = user.provider || "github"; // Cập nhật provider nếu chưa có
+      
+      // Cập nhật lại thông tin
+      const idx = users.findIndex((u) => u.id === user.id);
+      if (idx !== -1) {
+        users[idx] = user;
+        this.saveUsers(users);
+      }
+      
+      this.setCurrentUser(user);
+      return {
+        success: true,
+        message: "Đăng nhập thành công!",
+        user,
+        isNew: false,
+      };
+    }
+
+    // Chưa có tài khoản tương ứng → tạo mới
+    const nameParts = (githubUser.displayName || "GitHub User")
+      .trim()
+      .split(" ");
+    const firstName = nameParts.pop();
+    const lastName = nameParts.join(" ");
+
+    const newUser = {
+      id: Date.now(),
+      lastName: lastName,
+      firstName: firstName,
+      displayName: githubUser.displayName || "GitHub User",
+      email: githubUser.email,
+      phone: "",
+      password: "", // Không có password cho tài khoản GitHub
+      githubUid: githubUser.uid,
+      photoURL: githubUser.photoURL || "",
+      provider: "github",
       createdAt: new Date().toISOString(),
     };
 

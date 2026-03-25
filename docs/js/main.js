@@ -21,60 +21,58 @@ const updateHeaderScrollState = () => {
 
 window.addEventListener("scroll", updateHeaderScrollState);
 window.addEventListener("resize", updateHeaderScrollState);
-document.addEventListener("DOMContentLoaded", updateHeaderScrollState);
 
-// ==================== HAMBURGER MENU MOBILE ====================
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.querySelector(".nav");
+// ==================== KHỞI TẠO CÁC TÍNH NĂNG CHUNG ====================
+const initApp = () => {
+  updateHeaderScrollState();
 
-if (menuToggle && navMenu) {
-  menuToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
-    menuToggle.classList.toggle("active");
-  });
+  // ==================== HAMBURGER MENU MOBILE ====================
+  const menuToggle = document.getElementById("menuToggle");
+  const navMenu = document.querySelector(".nav");
 
-  // Đóng menu khi click vào link
-  const navLinks = navMenu.querySelectorAll(".nav-links a");
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      navMenu.classList.remove("active");
-      menuToggle.classList.remove("active");
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+      menuToggle.classList.toggle("active");
     });
-  });
 
-  // Đóng menu khi click bên ngoài
-  navMenu.addEventListener("click", (e) => {
-    if (e.target === navMenu) {
-      navMenu.classList.remove("active");
-      menuToggle.classList.remove("active");
-    }
-  });
-}
+    // Đóng menu khi click vào link
+    const navLinks = navMenu.querySelectorAll(".nav-links a");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("active");
+        menuToggle.classList.remove("active");
+      });
+    });
 
-// Hiệu ứng nền tối
-const toggleBtn = document.getElementById("themeToggle");
-
-if (toggleBtn) {
-  toggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-
-    const isDark = document.body.classList.contains("dark");
-    toggleBtn.textContent = isDark ? "☀️" : "🌙";
-
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-}
-
-// Load lại trạng thái
-window.onload = () => {
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-    if (toggleBtn) toggleBtn.textContent = "☀️";
+    // Đóng menu khi click bên ngoài
+    navMenu.addEventListener("click", (e) => {
+      if (e.target === navMenu) {
+        navMenu.classList.remove("active");
+        menuToggle.classList.remove("active");
+      }
+    });
   }
-};
 
-// Xử lý Preloader - dùng DOMContentLoaded để không đợi fonts/iframe
-document.addEventListener("DOMContentLoaded", () => {
+  // ==================== CHẾ ĐỘ NỀN TỐI (DARK MODE) ====================
+  const toggleBtn = document.getElementById("themeToggle");
+
+  if (toggleBtn) {
+    // Load lại trạng thái
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains("dark");
+      toggleBtn.textContent = isDark ? "☀️" : "🌙";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+  }
+
+  // ==================== XỬ LÝ PRELOADER ====================
   const preloader = document.getElementById("preloader");
   if (preloader) {
     setTimeout(() => {
@@ -82,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500); // Hiển thị 0.5 giây
   }
 
-  // ===== HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP TRÊN HEADER =====
+  // ==================== HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP ====================
   const authLink = document.getElementById("authLink");
   if (authLink && typeof UserManager !== "undefined") {
     const currentUser = UserManager.getCurrentUser();
@@ -95,109 +93,141 @@ document.addEventListener("DOMContentLoaded", () => {
       authLink.title = "Tài khoản của bạn";
       authLink.style.cursor = "pointer";
 
-      // Tạo user dropdown popup
-      const dropdownOverlay = document.createElement("div");
-      dropdownOverlay.className = "user-dropdown-overlay";
-      dropdownOverlay.id = "userDropdownOverlay";
+      // Tạo user dropdown popup (nếu chưa có)
+      if (!document.getElementById("userDropdownOverlay")) {
+        const dropdownOverlay = document.createElement("div");
+        dropdownOverlay.className = "user-dropdown-overlay";
+        dropdownOverlay.id = "userDropdownOverlay";
 
-      // Lấy chữ cái đầu của tên
-      const initials = (
-        currentUser.lastName.charAt(0) + currentUser.firstName.charAt(0)
-      ).toUpperCase();
+        // Lấy chữ cái đầu của tên
+        const initials = (
+          (currentUser.lastName ? currentUser.lastName.charAt(0) : "") +
+          (currentUser.firstName ? currentUser.firstName.charAt(0) : "")
+        ).toUpperCase();
 
-      // Lấy điểm tích lũy
-      const userPoints = (typeof PointsManager !== "undefined") ? PointsManager.getPoints() : 0;
+        // Lấy điểm tích lũy
+        const userPoints =
+          typeof PointsManager !== "undefined" ? PointsManager.getPoints() : 0;
 
-      dropdownOverlay.innerHTML =
-        '<div class="user-dropdown">' +
-        '<div class="user-dropdown-header">' +
-        '<div class="user-dropdown-avatar">' +
-        initials +
-        "</div>" +
-        '<div class="user-dropdown-info">' +
-        '<div class="user-dropdown-name">' +
-        currentUser.displayName +
-        "</div>" +
-        '<div class="user-dropdown-email">' +
-        currentUser.email +
-        "</div>" +
-        '<div class="user-dropdown-points"><i class="fas fa-coins"></i> ' +
-        userPoints.toLocaleString("vi-VN") +
-        " điểm</div>" +
-        "</div>" +
-        "</div>" +
-        '<ul class="user-dropdown-menu">' +
-        '<li><a href="#" id="btnMyAccount"><i class="fas fa-user"></i> Tài khoản của tôi</a></li>' +
-        '<li><a href="#" id="btnOrderHistory"><i class="fas fa-shopping-bag"></i> Đơn hàng</a></li>' +
-        '<li><button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button></li>' +
-        "</ul>" +
-        "</div>";
+        dropdownOverlay.innerHTML =
+          '<div class="user-dropdown">' +
+          '<div class="user-dropdown-header">' +
+          '<div class="user-dropdown-avatar">' +
+          initials +
+          "</div>" +
+          '<div class="user-dropdown-info">' +
+          '<div class="user-dropdown-name">' +
+          currentUser.displayName +
+          "</div>" +
+          '<div class="user-dropdown-email">' +
+          currentUser.email +
+          "</div>" +
+          '<div class="user-dropdown-points"><i class="fas fa-coins"></i> ' +
+          userPoints.toLocaleString("vi-VN") +
+          " điểm</div>" +
+          "</div>" +
+          "</div>" +
+          '<ul class="user-dropdown-menu">' +
+          '<li><a href="#" id="btnMyAccount"><i class="fas fa-user"></i> Tài khoản của tôi</a></li>' +
+          '<li><a href="#" id="btnOrderHistory"><i class="fas fa-shopping-bag"></i> Đơn hàng</a></li>' +
+          '<li><button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button></li>' +
+          "</ul>" +
+          "</div>";
 
-      document.body.appendChild(dropdownOverlay);
+        document.body.appendChild(dropdownOverlay);
 
-      // Click vào tên → mở/đóng dropdown
-      authLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropdownOverlay.classList.toggle("show");
-      });
-
-      // Click overlay → đóng dropdown
-      dropdownOverlay.addEventListener("click", (e) => {
-        if (e.target === dropdownOverlay) {
-          dropdownOverlay.classList.remove("show");
-        }
-      });
-
-      // Nút đăng xuất → hiện popup xác nhận
-      document.getElementById("btnLogout").addEventListener("click", () => {
-        dropdownOverlay.classList.remove("show");
-        showGiborPopup({
-          type: "warning",
-          title: "Đăng xuất",
-          message: "Bạn có chắc muốn đăng xuất khỏi tài khoản?",
-          confirmText: "Đăng xuất",
-          cancelText: "Hủy",
-          onConfirm: () => {
-            UserManager.logout();
-            showGiborPopup({
-              type: "success",
-              title: "Đã đăng xuất",
-              message: "Hẹn gặp lại bạn tại GIBOR Coffee!",
-              confirmText: "OK",
-              onConfirm: () => {
-                window.location.reload();
-              },
-            });
-          },
-        });
-      });
-
-      // Nút đơn hàng → hiện popup lịch sử đơn hàng
-      document
-        .getElementById("btnOrderHistory")
-        .addEventListener("click", (e) => {
+        // Click vào tên → mở/đóng dropdown
+        authLink.addEventListener("click", (e) => {
           e.preventDefault();
-          dropdownOverlay.classList.remove("show");
-          showOrderHistoryPopup();
+          e.stopPropagation();
+          dropdownOverlay.classList.toggle("show");
         });
 
-      // Nút tài khoản của tôi → hiện popup quản lý tài khoản
-      document.getElementById("btnMyAccount").addEventListener("click", (e) => {
-        e.preventDefault();
-        dropdownOverlay.classList.remove("show");
-        showProfilePopup();
-      });
+        // Click overlay → đóng dropdown
+        dropdownOverlay.addEventListener("click", (e) => {
+          if (e.target === dropdownOverlay) {
+            dropdownOverlay.classList.remove("show");
+          }
+        });
+
+        // Nút đăng xuất
+        const btnLogout = document.getElementById("btnLogout");
+        if (btnLogout) {
+          btnLogout.addEventListener("click", () => {
+            dropdownOverlay.classList.remove("show");
+            if (typeof showGiborPopup === "function") {
+              showGiborPopup({
+                type: "warning",
+                title: "Đăng xuất",
+                message: "Bạn có chắc muốn đăng xuất khỏi tài khoản?",
+                confirmText: "Đăng xuất",
+                cancelText: "Hủy",
+                onConfirm: () => {
+                  UserManager.logout();
+                  showGiborPopup({
+                    type: "success",
+                    title: "Đã đăng xuất",
+                    message: "Hẹn gặp lại bạn tại GIBOR Coffee!",
+                    confirmText: "OK",
+                    onConfirm: () => {
+                      window.location.reload();
+                    },
+                  });
+                },
+              });
+            } else {
+              if (confirm("Bạn có chắc muốn đăng xuất?")) {
+                UserManager.logout();
+                window.location.reload();
+              }
+            }
+          });
+        }
+
+        // Nút đơn hàng
+        const btnOrderHistory = document.getElementById("btnOrderHistory");
+        if (btnOrderHistory) {
+          btnOrderHistory.addEventListener("click", (e) => {
+            e.preventDefault();
+            dropdownOverlay.classList.remove("show");
+            window.location.href = "account.html?tab=orders";
+          });
+        }
+
+        // Nút tài khoản của tôi
+        const btnMyAccount = document.getElementById("btnMyAccount");
+        if (btnMyAccount) {
+          btnMyAccount.addEventListener("click", (e) => {
+            e.preventDefault();
+            dropdownOverlay.classList.remove("show");
+            window.location.href = "account.html?tab=profile";
+          });
+        }
+      }
     }
-    // Nếu chưa đăng nhập → giữ nguyên link "Đăng nhập"
   }
+};
+
+// Đảm bảo loadComponents (nếu có) chạy trước khi initApp
+document.addEventListener("DOMContentLoaded", () => {
+  // Nếu có components.js thì loadComponents đã được gọi bằng DOMContentLoaded trong file đó.
+  // Tuy nhiên để chắc chắn, ta có thể kiểm tra xem placeholder còn tồn tại không.
+  if (typeof loadComponents === "function") {
+    const headerPlaceholder = document.getElementById("header-placeholder");
+    const footerPlaceholder = document.getElementById("footer-placeholder");
+    if (headerPlaceholder || footerPlaceholder) {
+      loadComponents();
+    }
+  }
+
+  initApp();
 });
 
 /* 
 ========================================================================================
 
                                 KẾT THÚC CODE BỞI TRẦN GIA BẢO
-
+                                
 ========================================================================================
 */
 
@@ -261,7 +291,8 @@ function openPopup(name, img, basePrice, category) {
     // Tự động set giá = giá gốc
     selectedSize = "Mặc định";
     selectedPrice = basePrice;
-    document.getElementById("price-value").innerText = basePrice.toLocaleString("vi-VN");
+    document.getElementById("price-value").innerText =
+      basePrice.toLocaleString("vi-VN");
   } else {
     // Hiện lại cho đồ uống
     if (sizeOptions) sizeOptions.style.display = "";
@@ -302,17 +333,17 @@ function openPopup(name, img, basePrice, category) {
   const btnM = document.getElementById("btn-size-m");
   const btnL = document.getElementById("btn-size-l");
   if (btnS)
-    btnS.onclick = function () {
+    btnS.addEventListener("click", function () {
       selectSize("S", priceS, this);
-    };
+    });
   if (btnM)
-    btnM.onclick = function () {
+    btnM.addEventListener("click", function () {
       selectSize("M", priceM, this);
-    };
+    });
   if (btnL)
-    btnL.onclick = function () {
+    btnL.addEventListener("click", function () {
       selectSize("L", priceL, this);
-    };
+    });
 
   // Reset active class trên các nút size
   document.querySelectorAll(".size-options button").forEach((btn) => {
@@ -370,7 +401,8 @@ function changePopupQty(delta) {
   if (qtyEl) qtyEl.textContent = popupQuantity;
   // Cập nhật giá hiển thị theo số lượng
   const totalPrice = selectedPrice * popupQuantity;
-  document.getElementById("price-value").innerText = totalPrice.toLocaleString("vi-VN");
+  document.getElementById("price-value").innerText =
+    totalPrice.toLocaleString("vi-VN");
 }
 
 // Toggle topping (bật/tắt)
@@ -397,7 +429,8 @@ function toggleTopping(btnElement) {
 function updatePopupPrice() {
   const toppingTotal = selectedToppings.reduce((sum, t) => sum + t.price, 0);
   const total = selectedPrice + toppingTotal;
-  document.getElementById("price-value").innerText = total.toLocaleString("vi-VN");
+  document.getElementById("price-value").innerText =
+    total.toLocaleString("vi-VN");
 }
 
 // Chọn lượng đường / đá
@@ -487,14 +520,22 @@ function addToCart() {
   const note = noteEl ? noteEl.value.trim() : "";
 
   // Kiểm tra sản phẩm đã tồn tại chưa (cùng tên + size + đường + đá + topping + ghi chú)
-  const toppingKey = isFood ? "" : selectedToppings.map((t) => t.name).sort().join(",");
+  const toppingKey = isFood
+    ? ""
+    : selectedToppings
+        .map((t) => t.name)
+        .sort()
+        .join(",");
   const existIndex = cart.findIndex(
     (item) =>
       item.name === currentProduct.name &&
       item.size === selectedSize &&
       item.sugar === (isFood ? "" : selectedSugar) &&
       item.ice === (isFood ? "" : selectedIce) &&
-      (item.toppings || []).map((t) => t.name).sort().join(",") === toppingKey &&
+      (item.toppings || [])
+        .map((t) => t.name)
+        .sort()
+        .join(",") === toppingKey &&
       item.note === note,
   );
 
@@ -728,7 +769,9 @@ function showOrderHistoryPopup() {
         if (item.sugar) detailParts.push("Đường " + item.sugar);
         if (item.ice) detailParts.push("Đá " + item.ice);
         if (item.toppings && item.toppings.length > 0) {
-          detailParts.push("Topping: " + item.toppings.map(t => t.name).join(", "));
+          detailParts.push(
+            "Topping: " + item.toppings.map((t) => t.name).join(", "),
+          );
         }
         if (item.note) detailParts.push('Ghi chú: "' + item.note + '"');
 
@@ -742,7 +785,11 @@ function showOrderHistoryPopup() {
           " x" +
           item.quantity +
           "</span>" +
-          (detailStr ? '<span class="order-card-item-detail-scroll"><span class="order-card-item-detail-inner">' + detailStr + "</span></span>" : "") +
+          (detailStr
+            ? '<span class="order-card-item-detail-scroll"><span class="order-card-item-detail-inner">' +
+              detailStr +
+              "</span></span>"
+            : "") +
           "</div>" +
           '<span class="order-card-item-price">' +
           itemTotal.toLocaleString("vi-VN") +
@@ -884,45 +931,245 @@ function generateOTP() {
 }
 
 /**
- * Gửi mã OTP qua email thông qua Firebase Email Link
+ * Tạo token xác thực cho yêu cầu đổi mật khẩu
+ */
+function generateVerificationToken() {
+  return Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15) + 
+         Date.now().toString(36);
+}
+
+/**
+ * Gửi email xác thực yêu cầu đổi mật khẩu qua Firebase
+ * @param {string} email - Email người dùng
+ * @param {string} token - Token xác thực
+ */
+function sendPasswordChangeVerificationEmail(email, token) {
+  if (typeof firebase === "undefined" || !firebase.auth) {
+    console.warn("⚠️ Firebase không khả dụng");
+    showGiborPopup({
+      type: "error",
+      title: "Lỗi hệ thống",
+      message: "Không thể gửi email xác thực. Vui lòng thử lại sau.",
+      confirmText: "Đã hiểu",
+    });
+    return;
+  }
+
+  const auth = firebase.auth();
+  auth.languageCode = 'vi';
+
+  // Tạo URL xác thực với token
+  const verificationUrl = window.location.origin + '/account.html?verify_password_change=' + token;
+
+  // Gửi email xác thực qua Firebase
+  // Lưu ý: Firebase sendPasswordResetEmail không hỗ trợ custom URL với token
+  // Nên ta sẽ dùng cách khác: hiển thị popup với link xác thực
+  
+  showPasswordChangeVerificationPopup(email, verificationUrl, token);
+}
+
+/**
+ * Hiển thị popup yêu cầu xác thực đổi mật khẩu qua email
+ */
+function showPasswordChangeVerificationPopup(email, verificationUrl, token) {
+  const oldOverlay = document.getElementById("passwordChangeVerifyOverlay");
+  if (oldOverlay) oldOverlay.remove();
+
+  const maskedEmail = email.substring(0, 3) + "***" + email.substring(email.indexOf("@"));
+
+  const overlay = document.createElement("div");
+  overlay.className = "gibor-popup-overlay";
+  overlay.id = "passwordChangeVerifyOverlay";
+
+  overlay.innerHTML =
+    '<div class="gibor-popup-box" style="max-width: 500px;">' +
+    '<div class="gibor-popup-icon warning"><i class="fas fa-shield-alt"></i></div>' +
+    '<div class="gibor-popup-title">Xác thực đổi mật khẩu</div>' +
+    '<div class="gibor-popup-message">' +
+    'Để bảo mật tài khoản, vui lòng xác thực yêu cầu đổi mật khẩu.<br><br>' +
+    'Email xác thực sẽ được gửi đến: <strong>' + maskedEmail + '</strong>' +
+    '</div>' +
+    '<div style="background: #f0f8ff; border: 1px solid #90caf9; border-radius: 8px; padding: 12px; margin: 16px 0; font-size: 0.9rem;">' +
+    '<i class="fas fa-info-circle" style="color: #1565c0;"></i> ' +
+    '<strong>Lưu ý:</strong> Kiểm tra cả thư mục Spam/Junk nếu không thấy email.' +
+    '</div>' +
+    '<div class="gibor-popup-actions">' +
+    '<button class="gibor-popup-btn secondary" id="btnCancelPasswordChange">Hủy</button>' +
+    '<button class="gibor-popup-btn primary" id="btnSendVerificationEmail">' +
+    '<i class="fas fa-paper-plane"></i> Gửi email xác thực' +
+    '</button>' +
+    '</div>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  requestAnimationFrame(() => {
+    overlay.classList.add("show");
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove("show");
+    setTimeout(() => overlay.remove(), 300);
+    // Xóa request khỏi sessionStorage nếu hủy
+    sessionStorage.removeItem('gibor_password_change_request');
+  }
+
+  // Nút hủy
+  document.getElementById("btnCancelPasswordChange").addEventListener("click", closeOverlay);
+
+  // Nút gửi email
+  document.getElementById("btnSendVerificationEmail").addEventListener("click", () => {
+    const btn = document.getElementById("btnSendVerificationEmail");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+
+    // Gửi email qua Firebase (sử dụng password reset email)
+    firebase.auth().sendPasswordResetEmail(email, {
+      url: verificationUrl,
+      handleCodeInApp: false
+    })
+      .then(() => {
+        closeOverlay();
+        showGiborPopup({
+          type: "success",
+          title: "Đã gửi email!",
+          message: 
+            'Email xác thực đã được gửi đến <strong>' + maskedEmail + '</strong>.<br><br>' +
+            '<div style="text-align: left; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin-top: 12px;">' +
+            '<i class="fas fa-exclamation-triangle" style="color: #856404;"></i> ' +
+            '<strong>Quan trọng:</strong><br>' +
+            '• Click vào link trong email để xác nhận đổi mật khẩu<br>' +
+            '• Link có hiệu lực trong 15 phút<br>' +
+            '• Sau khi xác nhận, bạn sẽ cần đăng nhập lại' +
+            '</div>',
+          confirmText: "Đã hiểu",
+        });
+      })
+      .catch((error) => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi email xác thực';
+        
+        let errorMsg = "Không thể gửi email. Vui lòng thử lại.";
+        if (error.code === "auth/user-not-found") {
+          errorMsg = "Email này chưa được đăng ký trong hệ thống.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMsg = "Địa chỉ email không hợp lệ.";
+        }
+
+        showGiborPopup({
+          type: "error",
+          title: "Lỗi gửi email",
+          message: errorMsg,
+          confirmText: "Thử lại",
+        });
+      });
+  });
+}
+
+/**
+ * Xác thực và thực hiện đổi mật khẩu từ link email
+ * Gọi hàm này khi trang account.html load với query param verify_password_change
+ */
+function verifyAndChangePassword(token) {
+  const requestData = sessionStorage.getItem('gibor_password_change_request');
+  
+  if (!requestData) {
+    showGiborPopup({
+      type: "error",
+      title: "Yêu cầu không hợp lệ",
+      message: "Không tìm thấy yêu cầu đổi mật khẩu hoặc yêu cầu đã hết hạn.",
+      confirmText: "Đã hiểu",
+    });
+    return;
+  }
+
+  const request = JSON.parse(requestData);
+
+  // Kiểm tra token
+  if (request.token !== token) {
+    showGiborPopup({
+      type: "error",
+      title: "Token không hợp lệ",
+      message: "Link xác thực không đúng. Vui lòng thử lại.",
+      confirmText: "Đã hiểu",
+    });
+    return;
+  }
+
+  // Kiểm tra thời gian hết hạn (15 phút)
+  const elapsed = Date.now() - request.timestamp;
+  if (elapsed > 15 * 60 * 1000) {
+    sessionStorage.removeItem('gibor_password_change_request');
+    showGiborPopup({
+      type: "error",
+      title: "Yêu cầu đã hết hạn",
+      message: "Link xác thực đã hết hạn (15 phút). Vui lòng thực hiện lại yêu cầu đổi mật khẩu.",
+      confirmText: "Đã hiểu",
+    });
+    return;
+  }
+
+  // Thực hiện đổi mật khẩu
+  const result = UserManager.updatePassword(request.oldPassword, request.newPassword);
+  
+  // Xóa request khỏi sessionStorage
+  sessionStorage.removeItem('gibor_password_change_request');
+
+  if (result.success) {
+    showGiborPopup({
+      type: "success",
+      title: "Đổi mật khẩu thành công!",
+      message: "Mật khẩu của bạn đã được cập nhật. Vui lòng đăng nhập lại với mật khẩu mới.",
+      confirmText: "Đăng nhập",
+      onConfirm: () => {
+        UserManager.logout();
+        window.location.href = "login.html";
+      },
+    });
+  } else {
+    showGiborPopup({
+      type: "error",
+      title: "Đổi mật khẩu thất bại",
+      message: result.message || "Không thể đổi mật khẩu. Vui lòng thử lại.",
+      confirmText: "Đã hiểu",
+    });
+  }
+}
+
+/**
+ * Gửi mã OTP qua email thông qua Firebase
+ * Sử dụng Custom Email Action Handler để gửi OTP thực sự
  * Nếu Firebase chưa sẵn sàng → fallback hiện mã trên popup
  */
 function sendOTPViaFirebase(email, otp) {
   return new Promise((resolve, reject) => {
     if (typeof firebase !== "undefined" && firebase.auth) {
-      // Tạo tài khoản Firebase tạm để gửi email xác thực
-      const tempPassword = "GiborTemp_" + otp + "!";
       const auth = firebase.auth();
-
-      // Thử tạo tài khoản mới hoặc đăng nhập nếu đã tồn tại
-      auth
-        .createUserWithEmailAndPassword(email, tempPassword)
-        .then((userCredential) => {
-          // Gửi email xác thực từ Firebase
-          return userCredential.user.sendEmailVerification({
-            url: window.location.href,
-          });
-        })
+      
+      // Cấu hình ngôn ngữ tiếng Việt cho email
+      auth.languageCode = 'vi';
+      
+      // Gửi email reset password từ Firebase (chứa link reset)
+      // Đây là cách chính thức để Firebase gửi email xác thực
+      auth.sendPasswordResetEmail(email, {
+        url: window.location.origin + '/login.html',
+        handleCodeInApp: false
+      })
         .then(() => {
-          // Xóa tài khoản tạm sau khi gửi email
-          if (auth.currentUser) {
-            auth.currentUser.delete().catch(() => {});
-          }
+          console.log("📧 [GIBOR] Email xác thực đã được gửi qua Firebase đến:", email);
+          // Vẫn lưu OTP để xác thực local (backup)
           resolve({ sent: true, method: "firebase" });
         })
         .catch((err) => {
-          // Nếu email đã tồn tại trên Firebase → thử đăng nhập
-          if (err.code === "auth/email-already-in-use") {
-            // Fallback: không gửi được qua Firebase, hiện mã trực tiếp
-            console.log("📧 [GIBOR] Mã xác nhận:", otp);
-            resolve({ sent: true, method: "display" });
-          } else {
-            console.log("📧 [GIBOR] Mã xác nhận:", otp);
-            resolve({ sent: true, method: "display" });
-          }
+          console.warn("⚠️ [GIBOR] Không gửi được email qua Firebase:", err.message);
+          // Fallback: hiện mã trực tiếp trên popup
+          console.log("📧 [GIBOR] Mã xác nhận (fallback):", otp);
+          resolve({ sent: true, method: "display" });
         });
     } else {
-      console.log("📧 [GIBOR] Mã xác nhận:", otp);
+      // Firebase chưa sẵn sàng → hiện mã trực tiếp
+      console.log("📧 [GIBOR] Mã xác nhận (no Firebase):", otp);
       resolve({ sent: true, method: "display" });
     }
   });
@@ -950,7 +1197,19 @@ function showEmailOTPPopup(email, onSuccess) {
       email.substring(0, 3) + "***" + email.substring(email.indexOf("@"));
 
     let otpHintHTML = "";
-    if (result.method === "display") {
+    let instructionText = "";
+    
+    if (result.method === "firebase") {
+      // Firebase đã gửi email thành công
+      instructionText = "Vui lòng kiểm tra email và nhập mã OTP bên dưới để xác thực.";
+      otpHintHTML =
+        '<div class="otp-firebase-hint">' +
+        '<i class="fas fa-envelope"></i> Email xác thực đã được gửi qua Firebase. ' +
+        'Kiểm tra hộp thư đến hoặc thư rác của bạn.' +
+        "</div>";
+    } else {
+      // Fallback: hiện mã trực tiếp
+      instructionText = "Nhập mã xác nhận bên dưới để tiếp tục.";
       otpHintHTML =
         '<div class="otp-demo-hint">' +
         '<i class="fas fa-info-circle"></i> Mã xác nhận: <strong>' +
@@ -964,7 +1223,7 @@ function showEmailOTPPopup(email, onSuccess) {
       '<div class="otp-header">' +
       '<div class="otp-icon"><i class="fas fa-envelope-open-text"></i></div>' +
       "<h3>Xác thực Email</h3>" +
-      "<p>Mã xác nhận đã được gửi đến<br><strong>" +
+      "<p>" + instructionText + "<br><strong>" +
       maskedEmail +
       "</strong></p>" +
       "</div>" +

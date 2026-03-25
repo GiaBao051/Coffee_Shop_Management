@@ -1,3 +1,10 @@
+/* 
+========================================================================================
+
+                                    CODE BỞI TRẦN GIA BẢO
+
+========================================================================================
+*/
 const popup = document.getElementById("promoPopup");
 const closeBtn = document.getElementById("closePopup");
 
@@ -17,7 +24,6 @@ function closePopupHandler() {
   setTimeout(() => {
     popup.style.display = "none";
   }, 400);
-  copyPromoCode();
 }
 
 closeBtn.onclick = closePopupHandler;
@@ -29,22 +35,8 @@ window.onclick = function (event) {
   }
 };
 
-// Hàm sao chép mã
-function copyPromoCode() {
-  const code = document.getElementById("promoCode").innerText;
-  const el = document.createElement("textarea");
-  el.value = code;
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand("copy");
-  document.body.removeChild(el);
-
-  const copyBtn = document.querySelector(".copy-link");
-  copyBtn.innerText = "ĐÃ CHÉP!";
-  copyBtn.style.color = "#059669";
-
-  setTimeout(() => {
-    copyBtn.innerText = "SAO CHÉP";
-    copyBtn.style.color = "var(--pink-primary)";
-  }, 2000);
-}
+// JavaScript cho trang khuyến mãi (ads.html)
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Trang khuyến mãi đã sẵn sàng!");
+  // Bạn có thể thêm các chức năng cho trang ads tại đây
+});
