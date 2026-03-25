@@ -931,24 +931,24 @@ Nếu bạn gặp vấn đề hoặc có câu hỏi:
 
 ### Desktop View
 
-![Home Page](images/screenshots/desktop-home.png)
+![Home Page](docs/images/screenshots/desktop-home.png)
 *Trang chủ với hero banner và giới thiệu*
 
-![Menu Page](images/screenshots/desktop-menu.png)
+![Menu Page](docs/images/screenshots/desktop-menu.png)
 *Trang menu với popup chọn sản phẩm*
 
-![Cart Page](images/screenshots/desktop-cart.png)
+![Cart Page](docs/images/screenshots/desktop-cart.png)
 *Giỏ hàng với chi tiết sản phẩm*
 
-![Payment Page](images/screenshots/desktop-payment.png)
+![Payment Page](docs/images/screenshots/desktop-payment.png)
 *Trang thanh toán với QR code*
 
 ### Mobile View
 
-![Mobile Home](images/screenshots/mobile-home.png)
+![Mobile Home](docs/images/screenshots/mobile-home.png)
 *Trang chủ responsive mobile*
 
-![Mobile Menu](images/screenshots/mobile-menu.png)
+![Mobile Menu](docs/images/screenshots/mobile-menu.png)
 *Bottom navigation và drawer menu*
 
 ---
