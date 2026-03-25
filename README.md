@@ -766,12 +766,6 @@ const firebaseConfig = {
 - Dark mode support cho tất cả components mới
 - Cải thiện responsive design
 
-#### 📚 Tài liệu
-
-- `HUONG_DAN_KIEM_TRA_EMAIL_DUY_NHAT.md` - Hướng dẫn chi tiết về email verification
-- `HUONG_DAN_DOI_MAT_KHAU.md` - Hướng dẫn đổi mật khẩu với email
-- Cập nhật README.md với thông tin đầy đủ
-
 ### Version 1.0 (2025-2026) - Initial Release
 
 #### ✨ Tính năng cốt lõi
@@ -895,7 +889,7 @@ Dự án này là đồ án học thuật, không nhận contributions từ bên
 ### Project Links
 
 - **GitHub Repository:** [GIBOR-COFFEE-SHOP](https://github.com/Peo051/GIBOR-COFFEE-SHOP)
-- **Live Demo:** [giborcoffee.netlify.app](https://giabao051.github.io/Coffee_Shop_Management/)
+- **Live Demo:** [giborcoffee.netlify.app](https://peo051.github.io/Coffee_Shop_Management/)
 - **Documentation:** [docs.giborcoffee.com](https://docs.giborcoffee.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/yourusername/GIBOR-COFFEE-SHOP/issues)
 
