@@ -931,25 +931,56 @@ Nếu bạn gặp vấn đề hoặc có câu hỏi:
 
 ### Desktop View
 
-![Home Page](docs/images/screenshots/desktop-home.png)
-*Trang chủ với hero banner và giới thiệu*
+<div align="center">
 
-![Menu Page](docs/images/screenshots/desktop-menu.png)
-*Trang menu với popup chọn sản phẩm*
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/images/screenshots/desktop-home.png" alt="Home Page" width="100%"/>
+      <p align="center"><em>Trang chủ với hero banner và giới thiệu</em></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/screenshots/desktop-menu.png" alt="Menu Page" width="100%"/>
+      <p align="center"><em>Trang menu với popup chọn sản phẩm</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/images/screenshots/desktop-cart.png" alt="Cart Page" width="100%"/>
+      <p align="center"><em>Giỏ hàng với chi tiết sản phẩm</em></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/screenshots/desktop-payment.png" alt="Payment Page" width="100%"/>
+      <p align="center"><em>Trang thanh toán với QR code</em></p>
+    </td>
+  </tr>
+</table>
 
-![Cart Page](docs/images/screenshots/desktop-cart.png)
-*Giỏ hàng với chi tiết sản phẩm*
-
-![Payment Page](docs/images/screenshots/desktop-payment.png)
-*Trang thanh toán với QR code*
+</div>
 
 ### Mobile View
 
-![Mobile Home](docs/images/screenshots/mobile-home.png)
-*Trang chủ responsive mobile*
+<div align="center">
 
-![Mobile Menu](docs/images/screenshots/mobile-menu.png)
-*Bottom navigation và drawer menu*
+<table>
+  <tr>
+    <td width="33%">
+      <img src="docs/images/screenshots/mobile-home.png" alt="Mobile Home" width="100%"/>
+      <p align="center"><em>Trang chủ responsive</em></p>
+    </td>
+    <td width="33%">
+      <img src="docs/images/screenshots/mobile-menu.png" alt="Mobile Menu" width="100%"/>
+      <p align="center"><em>Bottom navigation</em></p>
+    </td>
+    <td width="33%">
+      <img src="docs/images/screenshots/mobile-cart.png" alt="Mobile Cart" width="100%"/>
+      <p align="center"><em>Giỏ hàng mobile</em></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
 
 ---
 
