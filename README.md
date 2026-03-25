@@ -895,7 +895,7 @@ Dự án này là đồ án học thuật, không nhận contributions từ bên
 ### Project Links
 
 - **GitHub Repository:** [GIBOR-COFFEE-SHOP](https://github.com/Peo051/GIBOR-COFFEE-SHOP)
-- **Live Demo:** [giborcoffee.netlify.app](https://giabao051.github.io/Coffee_Shop_Management/)
+- **Live Demo:** [giborcoffee.netlify.app](https://peo051.github.io/Coffee_Shop_Management/)
 - **Documentation:** [docs.giborcoffee.com](https://docs.giborcoffee.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/yourusername/GIBOR-COFFEE-SHOP/issues)
 
