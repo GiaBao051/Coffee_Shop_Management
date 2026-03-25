@@ -237,7 +237,7 @@
         return;
       }
 
-      // Kiểm tra mật khẩu cũ trước khi gửi OTP
+      // Kiểm tra mật khẩu cũ trước khi gửi email
       const users = UserManager.getUsers();
       const user = users.find((u) => u.id === currentUser.id);
       
@@ -246,8 +246,23 @@
         return;
       }
 
-      // Hàm thực hiện đổi mật khẩu sau khi xác thực OTP
-      const doChange = () => {
+      // Lưu thông tin đổi mật khẩu tạm thời vào sessionStorage
+      const changePasswordRequest = {
+        userId: currentUser.id,
+        email: currentUser.email,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+        timestamp: Date.now(),
+        token: generateVerificationToken()
+      };
+      
+      sessionStorage.setItem('gibor_password_change_request', JSON.stringify(changePasswordRequest));
+
+      // Gửi email xác thực qua Firebase
+      if (typeof sendPasswordChangeVerificationEmail === "function") {
+        sendPasswordChangeVerificationEmail(currentUser.email, changePasswordRequest.token);
+      } else {
+        // Fallback: Thực hiện đổi mật khẩu trực tiếp
         const result = UserManager.updatePassword(oldPassword, newPassword);
         if (!result.success) {
           notifyError("Đổi mật khẩu thất bại", result.message || "Không thể đổi mật khẩu.");
@@ -256,18 +271,9 @@
 
         notifySuccess("Thành công", "Bạn đã đổi mật khẩu thành công. Vui lòng đăng nhập lại.", () => {
           form.reset();
-          // Đăng xuất và chuyển về trang đăng nhập
           UserManager.logout();
           window.location.href = "login.html";
         });
-      };
-
-      // Hiện popup OTP để xác thực qua email
-      if (typeof showEmailOTPPopup === "function") {
-        showEmailOTPPopup(currentUser.email, doChange);
-      } else {
-        // Fallback nếu không có popup OTP
-        doChange();
       }
     });
   }
@@ -305,6 +311,18 @@
     const currentUser = UserManager.getCurrentUser();
     if (!currentUser) {
       window.location.href = "login.html";
+      return;
+    }
+
+    // Kiểm tra xem có query param verify_password_change không
+    const urlParams = new URLSearchParams(window.location.search);
+    const verifyToken = urlParams.get('verify_password_change');
+    
+    if (verifyToken && typeof verifyAndChangePassword === "function") {
+      // Xóa query param khỏi URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Thực hiện xác thực và đổi mật khẩu
+      verifyAndChangePassword(verifyToken);
       return;
     }
 
