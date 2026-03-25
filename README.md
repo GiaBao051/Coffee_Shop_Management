@@ -873,29 +873,29 @@ Dự án này là đồ án học thuật, không nhận contributions từ bên
 ### Team Members
 
 **Trần Dương Gia Bảo** - Core Developer
-- Email: giabao.dev@gmail.com
-- GitHub: [@giabao-dev](https://github.com/giabao-dev)
+- Email: tranduonggiabao0501@gmail,com
+- GitHub: [@Peo051](https://github.com/Peo051)
 - Role: Data Layer, Cart, Payment, Account
 
 **Trần Gia Bảo** - Frontend Lead
-- Email: giabao.frontend@gmail.com
-- GitHub: [@giabao-frontend](https://github.com/giabao-frontend)
+- Email: gibor06.dev@gmail.com
+- GitHub: [@gibor06](https://github.com/gibor06)
 - Role: UI/UX, Home, About, Contact, Branches
 
 **Nguyễn Thế Anh** - Firebase Specialist
-- Email: theanh.firebase@gmail.com
-- GitHub: [@theanh-firebase](https://github.com/theanh-firebase)
+- Email: nguyentheanh1701@gmail.com
+- GitHub: [@coffeee1701-lab](https://github.com/coffeee1701-lab)
 - Role: Authentication, OAuth, Firebase Integration
 
 **Nguyễn Hoàng Bảo** - Frontend Developer
-- Email: hoangbao.frontend@gmail.com
-- GitHub: [@hoangbao-frontend](https://github.com/hoangbao-frontend)
+- Email: baon05623@gmail.com
+- GitHub: [@hbao0204](https://github.com/hbao0204)
 - Role: Menu, Popup System, Product UI
 
 ### Project Links
 
-- **GitHub Repository:** [GIBOR-COFFEE-SHOP](https://github.com/yourusername/GIBOR-COFFEE-SHOP)
-- **Live Demo:** [giborcoffee.netlify.app](https://giborcoffee.netlify.app)
+- **GitHub Repository:** [GIBOR-COFFEE-SHOP](https://github.com/Peo051/GIBOR-COFFEE-SHOP)
+- **Live Demo:** [giborcoffee.netlify.app](https://giabao051.github.io/Coffee_Shop_Management/)
 - **Documentation:** [docs.giborcoffee.com](https://docs.giborcoffee.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/yourusername/GIBOR-COFFEE-SHOP/issues)
 
@@ -926,7 +926,7 @@ Nếu bạn gặp vấn đề hoặc có câu hỏi:
 
 ### Special Thanks
 
-- **Giảng viên hướng dẫn** - TS. Nguyễn Văn A
+- **Giảng viên hướng dẫn** - Ths. Lữ Thị Cẩm Tú
 - **Trường HUIT** - Cung cấp môi trường học tập
 - **Nhóm phát triển** - Teamwork và dedication
 - **Beta testers** - Feedback và bug reports
@@ -957,12 +957,6 @@ Nếu bạn gặp vấn đề hoặc có câu hỏi:
 ![Mobile Menu](screenshots/mobile-menu.png)
 *Bottom navigation và drawer menu*
 
-### Dark Mode
-
-![Dark Mode](screenshots/dark-mode.png)
-*Chế độ tối hiện đại*
-
----
 
 ## 📚 Additional Documentation
 
