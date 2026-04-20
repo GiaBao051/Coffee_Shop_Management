@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="css/menu.css" />
     <link rel="stylesheet" href="css/popup.css" />
+    <link rel="stylesheet" href="css/cld-integration.css" />
 
     <!-- MOBILE RESPONSIVE -->
     <link rel="stylesheet" href="css/mobile.css" />
@@ -64,6 +65,13 @@
       <!-- Trần Gia Bảo kết thúc chỉnh sửa -->
 
       <h2 class="menu-title">MENU GIBOR COFFEE</h2>
+      <section class="cld-widget cld-widget-menu" id="cldMenuRecommendationSection" hidden>
+        <div class="cld-widget-header">
+          <h3>Combo de xuat hom nay</h3>
+          <p>Duoc ca nhan hoa theo chi nhanh va segment.</p>
+        </div>
+        <div class="cld-recommendation-grid" id="cldMenuRecommendationList"></div>
+      </section>
       <!-- COFFEE -->
       <section class="menu-section">
         <h3 class="section-title">☕ CÀ PHÊ</h3>
@@ -1007,10 +1015,14 @@
     <!-- Phần JS CHUNG -->
     <script src="js/components.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/cld-api.js"></script>
+    <script src="js/cld-context.js"></script>
+    <script src="js/cld-tracking.js"></script>
     <script src="js/main.js"></script>
     <script src="js/mobile.js"></script>
     <script src="js/ads.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/cld-menu.js"></script>
   </body>
 </html>
 

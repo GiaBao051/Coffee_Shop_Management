@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <!-- CSS RIÊNG CHO CART -->
     <link rel="stylesheet" href="css/cart.css" />
+    <link rel="stylesheet" href="css/cld-integration.css" />
     <!-- MOBILE RESPONSIVE -->
     <link rel="stylesheet" href="css/mobile.css" />
 
@@ -82,6 +83,14 @@
         </table>
 
         <!-- Tổng cộng & Hành động -->
+        <section class="cld-widget cld-widget-cart" id="cldCartRecommendationSection" hidden>
+          <div class="cld-widget-header">
+            <h3>Goi y mua kem cho gio hang</h3>
+            <p>Them dung mon de mo khoa uu dai campaign.</p>
+          </div>
+          <div class="cld-recommendation-grid cld-recommendation-grid-cart" id="cldCartRecommendationList"></div>
+        </section>
+
         <div class="cart-summary">
           <div class="cart-summary-info">
             <p>Tổng sản phẩm: <strong id="totalItems">0</strong></p>
@@ -156,9 +165,13 @@
     <!-- Phần JS CHUNG -->
     <script src="js/components.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/cld-api.js"></script>
+    <script src="js/cld-context.js"></script>
+    <script src="js/cld-tracking.js"></script>
     <script src="js/main.js"></script>
     <!-- JS RIÊNG CHO CART -->
     <script src="js/cart.js"></script>
+    <script src="js/cld-cart.js"></script>
     <script src="js/mobile.js"></script>
   </body>
 </html>
