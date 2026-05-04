@@ -350,10 +350,6 @@ a {
   .logo {
     font-size: 1.2rem;
   }
-
-  .menu-card img {
-    height: 280px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -466,81 +462,12 @@ a {
     font-size: 15px;
   }
 
-  /* MENU CONTENT */
-  .menu-container {
-    margin: 25px auto;
-    padding: 0 12px;
-  }
-
-  .menu-title {
-    font-size: 22px;
-    margin-bottom: 25px;
-  }
-
-  .section-title {
-    font-size: 18px;
-    margin-bottom: 15px;
-  }
-
-  .menu-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .menu-card {
-    padding: 10px;
-  }
-
-  .menu-card img {
-    height: 200px;
-    border-radius: 8px;
-  }
-
-  .menu-card h4 {
-    font-size: 14px;
-    margin: 8px 0 3px;
-  }
-
-  .menu-card p {
-    font-size: 12px;
-  }
-
-  .price {
-    font-size: 13px;
-  }
-
-  .badge {
-    font-size: 10px;
-    padding: 4px 8px;
-  }
-
   .footer-col {
     min-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .menu-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .menu-card img {
-    height: 250px;
-  }
-
-  .menu-card h4 {
-    font-size: 16px;
-  }
-
-  .menu-card p {
-    font-size: 13px;
-  }
-
-  .menu-title {
-    font-size: 20px;
-  }
-
   .header-actions {
     gap: 5px;
   }
@@ -569,9 +496,14 @@ a {
 }
 
 .menu-container {
+  margin: 0 auto;
+}
+
+.menu-page {
   max-width: 1200px;
-  margin: 50px auto;
-  padding: 0 20px;
+  /* Dùng CSS riêng để không chặn padding-top mà mobile.js cần set cho category tabs. */
+  padding-top: clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(32px, 5vw, 64px);
 }
 
 body.dark .menu-container {
@@ -580,6 +512,48 @@ body.dark .menu-container {
   border-radius: 20px;
   padding: 24px 20px;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+}
+
+/* Banner menu giữ đúng tỉ lệ ảnh, không để ảnh kéo quá cao */
+.menu-banner-section {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.menu-carousel {
+  overflow: hidden;
+  border-radius: clamp(14px, 1.6vw, 20px);
+  background: #2d1b13;
+  box-shadow: 0 16px 36px rgba(75, 44, 32, 0.16);
+}
+
+.menu-carousel .carousel-inner,
+.menu-carousel .carousel-item {
+  width: 100%;
+  aspect-ratio: 1536 / 350;
+}
+
+.menu-carousel-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  background: #2d1b13;
+}
+
+.menu-carousel .carousel-control-prev,
+.menu-carousel .carousel-control-next {
+  width: 44px;
+}
+
+.menu-carousel .carousel-control-prev-icon,
+.menu-carousel .carousel-control-next-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background-color: rgba(45, 27, 19, 0.58);
+  background-size: 44%;
 }
 
 body.dark .menu-title,
@@ -603,10 +577,8 @@ body.dark .menu-card p {
    TIÊU ĐỀ MENU (MENU GIBOR COFFEE)
 ========================================= */
 .menu-title {
-  text-align: center;
-  font-size: 32px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
   color: #5a2d1a;
-  margin-bottom: 40px;
   letter-spacing: 2px;
 }
 
@@ -614,16 +586,16 @@ body.dark .menu-card p {
    MỖI NHÓM MENU (CÀ PHÊ / TRÀ / ...)
 ========================================= */
 .menu-section {
-  margin-bottom: 50px; /* Tách các nhóm menu ra */
+  margin-bottom: clamp(34px, 5vw, 56px); /* Tách các nhóm menu ra */
 }
 
 /* =========================================
    TIÊU ĐỀ NHÓM (☕ CÀ PHÊ, 🍃 TRÀ...)
 ========================================= */
 .section-title {
-  font-size: 24px;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
   color: #8b5e3c;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   border-left: 5px solid #c9a063;
   padding-left: 12px;
 }
@@ -632,9 +604,8 @@ body.dark .menu-card p {
    GRID CHỨA CÁC MÓN (CARD)
 ========================================= */
 .menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 25px;
+  --bs-gutter-x: 1rem;
+  --bs-gutter-y: 1rem;
 }
 
 /* =========================================
@@ -643,10 +614,12 @@ body.dark .menu-card p {
 .menu-card {
   background: #fff7f0;
   border-radius: 12px;
-  padding: 15px;
+  padding: 12px;
   text-align: center;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(194, 123, 67, 0.16);
+  display: flex;
+  flex-direction: column;
   transform: translateY(0) translateZ(0);
   transition:
     transform 460ms var(--motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1)),
@@ -686,7 +659,8 @@ body.dark .menu-card p {
 ========================================= */
 .menu-card img {
   width: 100%;
-  height: 400px;
+  aspect-ratio: 1 / 1;
+  height: auto;
   object-fit: cover;
   border-radius: 10px;
   transform: translateZ(0) scale(1);
@@ -704,7 +678,8 @@ body.dark .menu-card p {
 .menu-card h4 {
   margin: 12px 0 5px;
   color: #5a2d1a;
-  font-size: 18px;
+  font-size: clamp(0.9rem, 1.45vw, 1.05rem);
+  line-height: 1.35;
   transition: color 300ms var(--motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
@@ -712,8 +687,10 @@ body.dark .menu-card p {
    MÔ TẢ NGẮN
 ========================================= */
 .menu-card p {
-  font-size: 14px;
+  font-size: clamp(0.76rem, 1.1vw, 0.88rem);
+  line-height: 1.45;
   color: #777;
+  flex: 1 1 auto;
   transition: color 300ms var(--motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
@@ -728,6 +705,63 @@ body.dark .menu-card p {
   transition:
     color 300ms var(--motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1)),
     transform 300ms var(--motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+@media (max-width: 768px) {
+  .menu-page {
+    padding-bottom: 28px;
+  }
+
+  .menu-banner-section {
+    margin-bottom: 24px;
+  }
+
+  .menu-grid {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+  }
+
+  .menu-card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .menu-card img {
+    border-radius: 9px;
+  }
+
+  .menu-card h4 {
+    margin: 9px 0 4px;
+  }
+
+  .menu-card p {
+    display: -webkit-box;
+    min-height: 2.8em;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .price {
+    font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-grid {
+    --bs-gutter-x: 0.65rem;
+    --bs-gutter-y: 0.75rem;
+  }
+
+  .menu-card {
+    padding: 8px;
+  }
+
+  .badge {
+    max-width: calc(100% - 16px);
+    font-size: 0.58rem;
+    padding: 4px 8px;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

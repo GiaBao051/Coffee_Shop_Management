@@ -502,135 +502,10 @@
     border-radius: var(--m-radius-sm);
   }
 
-  /* ===== HERO (index.html) ===== */
-  .hero {
-    min-height: 55vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .hero-content {
-    padding: 24px 16px;
-    text-align: center;
-  }
-  .hero-content h1 {
-    font-size: 2rem;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .hero-content p {
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-    opacity: 0.9;
-  }
-  .hero-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-  .hero-btns .btn {
-    width: 100%;
-    max-width: 260px;
-    padding: 14px 20px;
-    font-size: 0.95rem;
-    border-radius: var(--m-radius);
-    text-align: center;
-    font-weight: 600;
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ===== INTRO SECTION (index.html) ===== */
-  .intro {
-    padding: 32px 16px;
-  }
-  .intro h2 {
-    font-size: 1.35rem;
-    margin-bottom: 12px;
-  }
-  .intro p {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .featured-icons {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    align-items: center;
-  }
-  .featured-icons > div {
-    background: var(--m-surface);
-    border-radius: var(--m-radius);
-    padding: 20px 24px;
-    width: 100%;
-    max-width: 320px;
-    text-align: center;
-    box-shadow: var(--m-shadow);
-    color: #4b2c20;
-  }
-  .featured-icons > div i {
-    font-size: 1.8rem !important;
-    margin-bottom: 8px;
-    display: block;
-  }
-  .featured-icons > div p {
-    margin: 0;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #4b2c20;
-  }
-
-  body.dark .featured-icons > div {
-    background: #f6efe8;
-    color: #3b241a;
-  }
-  body.dark .featured-icons > div p {
-    color: #3b241a;
-    opacity: 1;
-  }
-
-  /* ===== PROMO BANNER (index.html) ===== */
-  .promo-banner {
-    flex-direction: column !important;
-    border-radius: var(--m-radius);
-    margin: 16px;
-    overflow: hidden;
-  }
-  .promo-content {
-    padding: 24px 16px;
-    text-align: center;
-  }
-  .promo-content h2 {
-    font-size: 1.4rem;
-    line-height: 1.3;
-  }
-  .promo-content p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-  }
-  .btn-cta {
-    display: inline-block;
-    padding: 14px 28px;
-    border-radius: var(--m-radius);
-    font-size: 0.9rem;
-    font-weight: 600;
-    min-height: 48px;
-  }
+  /* Home page responsive đã chuyển sang index.html + css/home.css. */
 
   /* ===== MENU PAGE ===== */
-  .menu-container {
-    padding: 0;
-  }
-  .menu-title {
-    font-size: 1.3rem;
-    padding: 16px;
-    margin: 0;
-    text-align: center;
-  }
+  /* Layout/card menu đã chuyển sang Bootstrap grid trong menu.html + css/menu.css. */
 
   /* Category tabs — sticky scrollable */
   .m-category-tabs {
@@ -676,81 +551,6 @@
   }
   .m-category-tab:active {
     background: var(--m-accent-light);
-  }
-
-  /* Menu sections */
-  .menu-section {
-    padding: 0 12px 16px;
-  }
-  .section-title {
-    font-size: 1.1rem;
-    padding: 16px 4px 8px;
-    margin: 0;
-  }
-
-  /* Product cards — 2 column grid */
-  .menu-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-  .menu-card {
-    border-radius: var(--m-radius);
-    overflow: hidden;
-    box-shadow: var(--m-shadow);
-    background: var(--m-bg);
-    padding: 0;
-    cursor: pointer;
-    transition: transform 0.15s;
-    position: relative;
-    will-change: transform;
-  }
-  .menu-card:active {
-    transform: scale(0.97);
-  }
-  .menu-card img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    display: block;
-  }
-  .menu-card h4 {
-    font-size: 0.82rem;
-    padding: 8px 10px 2px;
-    margin: 0;
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .menu-card p {
-    font-size: 0.7rem;
-    padding: 0 10px;
-    margin: 0;
-    color: #888;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .menu-card .price {
-    display: block;
-    padding: 4px 10px 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--m-primary);
-  }
-  .menu-card .badge {
-    position: absolute;
-    top: 8px;
-    left: 0;
-    background: #ff6b35;
-    color: #fff;
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 3px 8px 3px 6px;
-    border-radius: 0 12px 12px 0;
-    z-index: 2;
-    letter-spacing: 0;
   }
 
   /* ===== POPUP → BOTTOM SHEET ===== */
@@ -1058,156 +858,7 @@
     padding: 12px 16px !important;
   }
 
-  /* ===== CART PAGE ===== */
-  .cart-container {
-    padding: 0 12px;
-  }
-  .cart-title {
-    font-size: 1.2rem;
-    padding: 16px 0 8px;
-    text-align: center;
-  }
-
-  /* Cart table → card layout */
-  .cart-table {
-    width: 100%;
-  }
-  .cart-table thead {
-    display: none;
-  }
-  .cart-table tbody {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .cart-table tr {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    background: var(--m-bg);
-    border-radius: var(--m-radius);
-    box-shadow: var(--m-shadow);
-    padding: 12px;
-    gap: 8px;
-    position: relative;
-  }
-  .cart-table td {
-    border: none !important;
-    padding: 0;
-  }
-  /* Product name col */
-  .cart-table td:first-child {
-    flex: 1;
-    min-width: 0;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  /* Size */
-  .cart-table td:nth-child(2) {
-    font-size: 0.8rem;
-    color: #888;
-    background: var(--m-surface);
-    padding: 2px 8px;
-    border-radius: 8px;
-  }
-  /* Price per unit */
-  .cart-table td:nth-child(3) {
-    font-size: 0.82rem;
-    color: #888;
-  }
-  /* Quantity */
-  .cart-table td:nth-child(4) {
-    order: 5;
-  }
-  /* Subtotal */
-  .cart-table td:nth-child(5) {
-    font-weight: 700;
-    color: var(--m-primary);
-    font-size: 0.95rem;
-    margin-left: auto;
-  }
-  /* Delete btn */
-  .cart-table td:last-child {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
-  .cart-table td:last-child button {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: #fff0f0;
-    color: #e74c3c;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Cart summary */
-  .cart-summary {
-    background: var(--m-surface);
-    border-radius: var(--m-radius);
-    padding: 16px;
-    margin: 16px 0;
-    box-shadow: var(--m-shadow);
-  }
-  .cart-summary-info {
-    margin-bottom: 12px;
-  }
-  .cart-summary-info p {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-  .cart-total {
-    font-size: 1.1rem !important;
-    color: var(--m-primary);
-  }
-  .cart-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .cart-actions .btn-checkout {
-    width: 100%;
-    padding: 14px;
-    border-radius: var(--m-radius);
-    font-size: 0.95rem;
-    font-weight: 700;
-    min-height: 50px;
-    background: var(--m-primary);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-  .cart-actions .btn-checkout:active {
-    opacity: 0.9;
-  }
-  .cart-actions .btn-continue,
-  .cart-actions .btn-clear {
-    padding: 10px;
-    border-radius: var(--m-radius);
-    font-size: 0.85rem;
-    text-align: center;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .cart-actions .btn-clear {
-    background: none;
-    border: 1.5px solid #e0d5c8;
-    color: #999;
-  }
-  .cart-actions .btn-continue {
-    background: var(--m-surface);
-    color: var(--m-primary);
-    font-weight: 600;
-    border: 1.5px solid var(--m-accent);
-  }
+  /* Cart layout/card responsive đã chuyển sang css/cart.css. */
 
   /* Checkout overlay — bottom sheet */
   .checkout-overlay .checkout-box {
@@ -1248,31 +899,7 @@
     color: #666;
   }
 
-  /* Cart empty state */
-  .cart-empty {
-    padding: 48px 16px;
-    text-align: center;
-  }
-  .cart-empty i {
-    font-size: 3rem;
-    color: #ddd;
-    margin-bottom: 16px;
-  }
-  .cart-empty p {
-    font-size: 0.95rem;
-    color: #888;
-    margin-bottom: 16px;
-  }
-  .btn-back-menu {
-    display: inline-block;
-    padding: 12px 28px;
-    background: var(--m-primary);
-    color: #fff;
-    border-radius: var(--m-radius);
-    font-weight: 600;
-    font-size: 0.9rem;
-    min-height: 44px;
-  }
+  /* Empty cart responsive đã chuyển sang css/cart.css. */
 
   /* ===== LOGIN / REGISTER ===== */
   .login-page {
@@ -1660,9 +1287,7 @@
 
 /* ===== TABLET (768px – 992px) ===== */
 @media (min-width: 769px) and (max-width: 992px) {
-  .menu-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  /* Grid menu dùng col-md-4 trong Bootstrap, không cần ghi đè tại đây. */
   .m-bottom-nav {
     display: none;
   }
@@ -1694,19 +1319,7 @@
   .header-actions {
     gap: 4px;
   }
-  .menu-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
-  }
-  .menu-card h4 {
-    font-size: 0.75rem;
-  }
-  .menu-card .price {
-    font-size: 0.78rem;
-  }
-  .hero-content h1 {
-    font-size: 1.6rem;
-  }
+  /* Card menu nhỏ đã được xử lý trong css/menu.css để tránh trùng responsive. */
   .m-bottom-nav a {
     font-size: 0.65rem;
     min-width: 48px;
