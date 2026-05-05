@@ -55,9 +55,7 @@
 }
 
 .contact-trust {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  /* Bootstrap row/col chịu trách nhiệm responsive. */
   margin-bottom: 24px;
 }
 
@@ -98,9 +96,8 @@
 }
 
 .contact-shell {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 20px;
+  /* Giữ layout bằng Bootstrap grid, CSS chỉ giữ nhịp dọc. */
+  margin-top: 0;
 }
 
 .contact-panel {
@@ -245,6 +242,7 @@
 .contact-field input,
 .contact-field textarea {
   width: 100%;
+  min-height: 46px;
   border-radius: 14px;
   border: 1.5px solid #eadfce;
   background: #fffdfb;
@@ -289,9 +287,6 @@
 
 .contact-bottom {
   margin-top: 18px;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 18px;
 }
 
 .contact-map-card,
@@ -543,18 +538,13 @@ body.dark .modal-content p {
   .contact-modern {
     padding: 42px 16px 52px;
   }
-
-  .contact-trust {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-shell,
-  .contact-bottom {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
+  .contact-modern {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+
   .contact-hero {
     text-align: left;
     margin-bottom: 18px;
@@ -585,7 +575,7 @@ body.dark .modal-content p {
 
 @media (max-width: 480px) {
   .contact-modern {
-    padding: 34px 12px 42px;
+    padding: 34px 12px calc(88px + env(safe-area-inset-bottom));
   }
 
   .contact-hero h1 {

@@ -40,6 +40,11 @@ function updateCartCount() {
   cartBadges.forEach((badge) => {
     badge.textContent = totalItems;
   });
+
+  // Đồng bộ badge giỏ hàng ở bottom nav mobile nếu mobile.js đã tạo.
+  if (typeof window.updateBottomNavBadge === "function") {
+    window.updateBottomNavBadge();
+  }
 }
 
 // ==================== HIỂN THỊ TOAST THÔNG BÁO ====================
@@ -73,6 +78,9 @@ function renderCart() {
   cartContent.classList.toggle("hidden", isCartEmpty);
 
   if (isCartEmpty) {
+    cartBody.innerHTML = "";
+    if (totalItemsEl) totalItemsEl.textContent = "0";
+    if (totalPriceEl) totalPriceEl.textContent = formatPrice(0);
     updateCartCount();
     return;
   }

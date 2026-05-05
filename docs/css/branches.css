@@ -122,9 +122,8 @@ body.dark .branch-map-frame {
 }
 
 .branch-filter-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 14px;
+  /* Bootstrap row/col xử lý form filter responsive. */
+  margin-top: 0;
 }
 
 .branch-filter-item {
@@ -170,9 +169,6 @@ body.dark .branch-map-frame {
 }
 
 .branch-content-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
   align-items: start;
 }
 
@@ -181,9 +177,8 @@ body.dark .branch-map-frame {
 }
 
 .branch-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  /* Bootstrap row-cols giúp danh sách chi nhánh đổi cột theo breakpoint. */
+  margin-top: 0;
 }
 
 .branch-card {
@@ -381,16 +376,16 @@ body.dark .branch-map-frame {
 }
 
 @media (max-width: 1024px) {
-  .branch-content-grid {
-    grid-template-columns: 1fr;
-  }
-
   .branch-detail-card {
     position: static;
   }
 }
 
 @media (max-width: 768px) {
+  .branches-page {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+
   .branches-hero {
     min-height: 290px;
     padding: 24px 16px;
@@ -404,14 +399,6 @@ body.dark .branch-map-frame {
   .branch-filter-card {
     border-radius: 14px;
     padding: 16px;
-  }
-
-  .branch-filter-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .branch-grid {
-    grid-template-columns: 1fr;
   }
 
   .branch-detail-image-wrap {

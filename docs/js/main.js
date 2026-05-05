@@ -655,6 +655,11 @@ function addToCart() {
     badge.textContent = totalItems;
   });
 
+  // Đồng bộ badge giỏ hàng ở bottom nav mobile sau khi thêm món.
+  if (typeof window.updateBottomNavBadge === "function") {
+    window.updateBottomNavBadge();
+  }
+
   // Đóng popup và hiện toast thông báo
   closePopup();
   const toastQty = isFood && popupQuantity > 1 ? " x" + popupQuantity : "";

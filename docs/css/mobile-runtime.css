@@ -1,0 +1,945 @@
+/*
+  File này chỉ chứa style cho mobile runtime UI:
+  drawer, bottom nav, footer accordion, category tabs và các bottom sheet.
+  Responsive layout của từng trang đã chuyển về CSS riêng của trang đó.
+*/
+
+/*
+========================================================================================
+
+                                    CODE BỞI TRẦN DƯƠNG GIA BẢO
+
+========================================================================================
+*/
+
+/* ===== DESIGN TOKENS ===== */
+:root {
+  --m-bg: #ffffff;
+  --m-surface: #fff7ef;
+  --m-text: #1f1f1f;
+  --m-primary: #4b2c20;
+  --m-accent: #d4a373;
+  --m-accent-light: #f5e6d3;
+  --m-radius: 14px;
+  --m-radius-sm: 8px;
+  --m-shadow: 0 2px 12px rgba(75, 44, 32, 0.08);
+  --m-shadow-lg: 0 8px 30px rgba(75, 44, 32, 0.12);
+  --m-header-h: 56px;
+  --m-bottom-nav-h: 60px;
+  --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===== GLOBAL MOBILE RESETS ===== */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    padding-bottom: calc(var(--m-bottom-nav-h) + var(--m-safe-bottom) + 8px);
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+  }
+  body.m-lock-scroll {
+    overflow: hidden;
+    height: 100dvh;
+    overscroll-behavior: none;
+  }
+  body.m-lock-scroll .m-drawer {
+    touch-action: pan-y;
+  }
+
+  /* Keep preloader full-screen; avoid collisions with header logo rules. */
+  #preloader {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* ===== HEADER — compact sticky ===== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: var(--m-primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    backdrop-filter: saturate(1.1) blur(8px);
+  }
+  .header-container {
+    height: var(--m-header-h);
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .header .logo img {
+    width: 36px;
+    height: 36px;
+    border-width: 1.5px;
+  }
+  .header .logo {
+    font-size: 1rem;
+    gap: 8px;
+    letter-spacing: 0.5px;
+    min-width: 0;
+    max-width: calc(100% - 170px);
+  }
+  .header .logo span {
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .header .logo .logo-text small {
+    display: none;
+  }
+
+  /* Hide desktop nav + auth text */
+  .nav {
+    display: none !important;
+  }
+  .header-actions .icon-btn:not(.cart) {
+    display: none !important;
+  }
+  .header-actions .theme-toggle {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  /* Cart button — icon only */
+  .header-actions .icon-btn.cart {
+    padding: 0;
+    border: none;
+    background: none;
+    position: relative;
+    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-btn.cart span:first-of-type {
+    display: none; /* Hide "Giỏ hàng" text */
+  }
+  .icon-btn.cart span:last-child {
+    position: absolute;
+    top: 2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    padding: 0;
+    margin: 0;
+    border-width: 1.5px;
+  }
+
+  /* Hamburger visible */
+  .menu-toggle {
+    display: inline-flex !important;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    border-radius: var(--m-radius-sm);
+    border-width: 1.5px;
+  }
+  .menu-toggle:active,
+  .header-actions .icon-btn.cart:active {
+    transform: scale(0.96);
+  }
+  .header-actions {
+    gap: 8px;
+  }
+
+  /* ===== DRAWER (slides from right) ===== */
+  .m-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .m-drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .m-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    background: var(--m-bg);
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+  .m-drawer,
+  .m-drawer * {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  .m-drawer-overlay.open .m-drawer {
+    transform: translateX(0);
+  }
+  .m-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px;
+    border-bottom: 1px solid #f0e6dc;
+    background: var(--m-surface);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .m-drawer-header .m-drawer-brand {
+    font-family: "Playfair Display", serif;
+    font-size: 1.15rem;
+    color: var(--m-primary);
+    font-weight: 700;
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .m-drawer-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    font-size: 1.3rem;
+    color: #666;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex: 0 0 auto;
+  }
+  .m-drawer-close:active {
+    background: #f0e6dc;
+  }
+  .m-drawer-nav {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .m-drawer-nav li {
+    min-width: 0;
+  }
+  .m-drawer-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    color: var(--m-text);
+    font-weight: 500;
+    transition: background 0.15s;
+    text-decoration: none;
+    min-height: 48px;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .m-drawer-nav li a i {
+    width: 20px;
+    text-align: center;
+    color: var(--m-accent);
+    font-size: 1rem;
+  }
+  .m-drawer-nav li a:active,
+  .m-drawer-nav li a.active {
+    background: var(--m-accent-light);
+    color: var(--m-primary);
+  }
+  .m-drawer-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid #f0e6dc;
+    box-sizing: border-box;
+  }
+  .m-drawer-auth {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background: var(--m-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--m-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    box-sizing: border-box;
+  }
+  .m-drawer-auth:active {
+    opacity: 0.85;
+  }
+
+  /* ===== BOTTOM NAVIGATION ===== */
+  .m-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--m-bottom-nav-h);
+    background: var(--m-bg);
+    border-top: 1px solid #ede3d9;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 997;
+    padding-bottom: var(--m-safe-bottom);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+    backdrop-filter: blur(12px);
+  }
+  .m-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #999;
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    min-width: 56px;
+    min-height: 44px;
+    border-radius: 10px;
+    transition: color 0.15s;
+    position: relative;
+  }
+  .m-bottom-nav a i {
+    font-size: 1.2rem;
+    transition: transform 0.15s;
+  }
+  .m-bottom-nav a.active {
+    color: var(--m-primary);
+  }
+  .m-bottom-nav a.active i {
+    transform: scale(1.1);
+  }
+  .m-bottom-nav a:active {
+    color: var(--m-primary);
+  }
+
+  .m-bottom-nav a .m-nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.6rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* ===== FOOTER — compact on mobile ===== */
+  .footer {
+    margin-top: 24px;
+    padding: 32px 0 16px;
+    margin-bottom: 0;
+  }
+  .footer-container {
+    display: block;
+    gap: 0;
+    padding: 0 16px;
+  }
+  .footer-col {
+    min-width: unset;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 16px 0;
+  }
+  .footer-col:last-child {
+    border-bottom: none;
+  }
+  .footer-col h4 {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-col h4::after {
+    content: "\f078"; /* chevron-down */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.7rem;
+    opacity: 0.5;
+    transition: transform 0.3s;
+  }
+  .footer-col.m-footer-open h4::after {
+    transform: rotate(180deg);
+  }
+  .footer-col > ul,
+  .footer-col > .footer-description,
+  .footer-col > .footer-badges,
+  .footer-col > .social-links,
+  .footer-col > .google-map {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .footer-col.m-footer-open > ul,
+  .footer-col.m-footer-open > .footer-description,
+  .footer-col.m-footer-open > .footer-badges,
+  .footer-col.m-footer-open > .social-links,
+  .footer-col.m-footer-open > .google-map {
+    max-height: 500px;
+  }
+  /* First col (brand) always open */
+  .footer-col:first-child > ul,
+  .footer-col:first-child > .footer-description,
+  .footer-col:first-child > .footer-badges {
+    max-height: 500px;
+  }
+  .footer-col:first-child h3 {
+    font-size: 1.1rem;
+  }
+  .footer-col:first-child h4::after {
+    display: none;
+  }
+  .footer-bottom {
+    margin-top: 16px;
+    padding-top: 12px;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .footer-bottom-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .footer-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .footer-brand-link img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+  .footer-brand-link p {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+  .footer-description {
+    font-size: 0.86rem;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .footer-badges {
+    gap: 8px;
+  }
+  .footer-badges li {
+    font-size: 0.82rem;
+  }
+  .footer-contact li {
+    font-size: 0.84rem;
+  }
+  .footer .social-links {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+  }
+  .footer .social-links a {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+  .google-map iframe {
+    height: 120px;
+    border-radius: var(--m-radius-sm);
+  }
+
+  /* Home responsive đã chuyển sang file riêng của trang chủ. */
+
+  /* ===== MENU PAGE ===== */
+  /* Layout/card menu đã chuyển sang Bootstrap grid và file riêng của menu. */
+
+  /* Category tabs — sticky scrollable */
+  .m-category-tabs {
+    position: fixed;
+    top: var(--m-header-h);
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    z-index: 998;
+    background: var(--m-bg);
+    border-bottom: 1px solid #ede3d9;
+    margin-top: 0;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .m-category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .m-category-tab {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .m-category-tab.active {
+    color: var(--m-primary);
+    border-bottom-color: var(--m-accent);
+  }
+  .m-category-tab:active {
+    background: var(--m-accent-light);
+  }
+
+  /* ===== POPUP → BOTTOM SHEET ===== */
+  .popup-overlay {
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    padding: 0 !important;
+  }
+  .popup-overlay.show {
+    display: flex !important;
+  }
+  .popup-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 85vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    animation: m-sheet-up 0.3s ease forwards !important;
+    overflow: hidden;
+  }
+  @keyframes m-sheet-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .popup-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.06);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .popup-img-wrap {
+    width: 100%;
+    max-height: 200px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .popup-img-wrap img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  .popup-info {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 80px; /* room for sticky button */
+  }
+  .popup-info h3 {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  .popup-desc {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 16px;
+  }
+
+  /* Size segmented control */
+  .size-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .size-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border: 1.5px solid #e0d5c8;
+    border-radius: var(--m-radius);
+    background: var(--m-bg);
+    cursor: pointer;
+    text-align: center;
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 0.85rem;
+    color: var(--m-primary);
+  }
+  .size-btn.active {
+    border-color: var(--m-accent);
+    background: var(--m-accent-light);
+    color: var(--m-primary);
+    font-weight: 700;
+  }
+  .size-label {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .size-price {
+    font-size: 0.72rem;
+    opacity: 0.7;
+  }
+
+  /* Option chips (sugar/ice) */
+  .option-group {
+    margin-bottom: 14px;
+  }
+  .option-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .option-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .option-btn {
+    padding: 8px 14px;
+    border: 1.5px solid #e0d5c8;
+    border-radius: 20px;
+    background: var(--m-bg);
+    font-size: 0.8rem;
+    cursor: pointer;
+    min-height: 36px;
+    transition: all 0.15s;
+    color: var(--m-primary);
+  }
+  .option-btn.active {
+    background: var(--m-accent-light);
+    border-color: var(--m-accent);
+    color: var(--m-primary);
+    font-weight: 600;
+  }
+  .option-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Topping buttons */
+  .topping-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .topping-btn {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    border: 1.5px solid #e0d5c8;
+    background: var(--m-bg);
+    min-height: 36px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--m-primary);
+  }
+  .topping-btn.active {
+    background: var(--m-accent-light);
+    border-color: var(--m-accent);
+    color: var(--m-primary);
+    font-weight: 600;
+  }
+
+  /* Popup note */
+  .popup-note {
+    width: 100%;
+    border: 1.5px solid #e0d5c8;
+    border-radius: var(--m-radius-sm);
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    resize: none;
+    color: var(--m-primary);
+  }
+
+  /* Dark theme popup contrast fix */
+  body.dark .popup-box {
+    background: #1f1f1f;
+    color: #f4e9de;
+    border-top: 1px solid #3f2f25;
+  }
+  body.dark .popup-info h3,
+  body.dark .option-label,
+  body.dark .popup-price {
+    color: var(--m-accent);
+  }
+  body.dark .popup-desc {
+    color: #c4b5a6;
+  }
+  body.dark .size-btn,
+  body.dark .option-btn,
+  body.dark .topping-btn {
+    background: #2a2a2a;
+    border-color: #5b4638;
+    color: #f4e9de;
+  }
+  body.dark .size-btn.active,
+  body.dark .option-btn.active,
+  body.dark .topping-btn.active {
+    background: var(--m-accent-light);
+    border-color: var(--m-accent);
+    color: var(--m-primary);
+  }
+  body.dark .popup-note {
+    background: #252525;
+    border-color: #5b4638;
+    color: #f4e9de;
+  }
+  body.dark .popup-note::placeholder {
+    color: #9f8a78;
+  }
+  body.dark .qty-btn {
+    background: #2a2a2a;
+    border-color: #5b4638;
+    color: #f4e9de;
+  }
+  body.dark .qty-value {
+    color: var(--m-accent);
+  }
+  body.dark .add-cart {
+    background: var(--m-accent);
+    color: var(--m-primary);
+  }
+
+  /* Quantity stepper */
+  .popup-quantity {
+    margin: 12px 0;
+  }
+  .quantity-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid #e0d5c8;
+    border-radius: var(--m-radius);
+    overflow: hidden;
+  }
+  .qty-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: var(--m-surface);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--m-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-btn:active {
+    background: var(--m-accent-light);
+  }
+  .qty-value {
+    width: 48px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* Popup price */
+  .popup-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 12px 0;
+    color: var(--m-primary);
+  }
+
+  /* Add to cart button — sticky at bottom of sheet */
+  .add-cart {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--m-radius);
+    background: var(--m-primary);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+  }
+  .add-cart:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  /* Toast */
+  .popup-toast, .toast {
+    bottom: calc(var(--m-bottom-nav-h) + 12px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    max-width: 100% !important;
+    border-radius: var(--m-radius) !important;
+    font-size: 0.85rem;
+    min-height: 44px;
+    padding: 12px 16px !important;
+  }
+
+    /* Layout ri?ng c?a t?ng trang ?? chuy?n v? CSS ri?ng. */
+
+  /* ===== USER DROPDOWN ON MOBILE ===== */
+  .user-dropdown-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .user-dropdown {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+    margin: 0 !important;
+    animation: m-sheet-up 0.25s ease;
+  }
+
+  /* ===== ORDER HISTORY ON MOBILE ===== */
+  .order-history-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .order-history-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 85vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ===== TABLET (768px – 992px) ===== */
+@media (min-width: 769px) and (max-width: 992px) {
+  /* Grid menu dùng col-md-4 trong Bootstrap, không cần ghi đè tại đây. */
+  .m-bottom-nav {
+    display: none;
+  }
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* ===== DESKTOP (>= 993px) ===== */
+@media (min-width: 993px) {
+  .m-bottom-nav,
+  .m-drawer-overlay,
+  .m-category-tabs {
+    display: none !important;
+  }
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* ===== SMALL PHONE (<=360px) ===== */
+@media (max-width: 360px) {
+  .header-container {
+    padding: 0 8px;
+  }
+  .header .logo span {
+    display: none;
+  }
+  .header-actions {
+    gap: 4px;
+  }
+  /* Card menu nhỏ đã được xử lý trong file riêng của menu. */
+  .m-bottom-nav a {
+    font-size: 0.65rem;
+    min-width: 48px;
+    padding: 6px 8px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (max-width: 768px) {
+  *:focus-visible {
+    outline: 2px solid var(--m-accent);
+    outline-offset: 2px;
+  }
+  button, a, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/*
+========================================================================================
+
+                                    KẾT THÚC CODE BỞI TRẦN DƯƠNG GIA BẢO
+
+========================================================================================
+*/

@@ -10,6 +10,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="images/logo/logo.jpg" />
     <title>Chi nhánh GIBOR COFFEE</title>
 
     <!-- THEME CHÍNH DÙNG CHUNG -->
@@ -18,7 +19,7 @@
     <!-- CSS RIÊNG CHO TRANG CHI NHÁNH -->
     <link rel="stylesheet" href="css/branches.css" />
     <!-- MOBILE RESPONSIVE -->
-    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/mobile-runtime.css" />
 
     <!-- FONT DÙNG CHUNG -->
     <link
@@ -34,7 +35,7 @@
     <!-- HEADER DÙNG CHUNG -->
     <div id="header-placeholder"></div>
 
-    <main class="branches-page">
+    <main class="branches-page container-fluid px-0">
       <!-- Loading Screen -->
       <div class="logo" id="preloader">
         <div class="loader-icon">
@@ -44,7 +45,7 @@
       </div>
 
       <section class="branches-hero">
-        <div class="branches-hero-content">
+        <div class="branches-hero-content container px-3">
           <h1>Hệ Thống Chi nhánh Của GIBOR</h1>
           <p>
             Tìm chi nhánh gần bạn để thưởng thức cà phê rang mộc trong không
@@ -53,25 +54,27 @@
         </div>
       </section>
 
-      <section class="branches-container">
-        <div class="branch-filter-card">
+      <section class="branches-container container-xl">
+        <div class="branch-filter-card card border-0">
           <h2>Danh sách chi nhánh</h2>
           <p>Chọn khu vực hoặc tìm theo tên chi nhánh, địa chỉ.</p>
 
-          <div class="branch-filter-grid">
-            <div class="branch-filter-item">
-              <label for="branchCityFilter">Khu vực</label>
-              <select id="branchCityFilter">
+          <div class="branch-filter-grid row g-3">
+            <!-- Bootstrap form/grid giúp bộ lọc không tràn ngang trên mobile. -->
+            <div class="branch-filter-item col-md-4">
+              <label for="branchCityFilter" class="form-label">Khu vực</label>
+              <select id="branchCityFilter" class="form-select">
                 <option value="all">Tất cả khu vực</option>
                 <option value="hcm">TP. Hồ Chí Minh</option>
                 <option value="hn">Hà Nội</option>
                 <option value="dn">Đà Nẵng</option>
               </select>
             </div>
-            <div class="branch-filter-item">
-              <label for="branchSearch">Tìm kiếm</label>
+            <div class="branch-filter-item col-md-8">
+              <label for="branchSearch" class="form-label">Tìm kiếm</label>
               <input
                 id="branchSearch"
+                class="form-control"
                 type="text"
                 placeholder="Ví dụ: Nguyễn Huệ, Cầu Giấy, Võ Nguyên Giáp..."
               />
@@ -81,16 +84,17 @@
           <div class="branch-result" id="branchResultCount">0 chi nhánh</div>
         </div>
 
-        <div class="branch-content-grid">
-          <div class="branch-list-wrap">
-            <div class="branch-grid" id="branchGrid"></div>
+        <div class="branch-content-grid row g-4 align-items-start">
+          <div class="branch-list-wrap col-lg-6">
+            <div class="branch-grid row row-cols-1 row-cols-sm-2 g-3" id="branchGrid"></div>
             <div class="branch-empty hidden" id="branchEmpty">
               <i class="fa-solid fa-location-dot"></i>
               <p>Không tìm thấy chi nhánh phù hợp. Hãy thử từ khóa khác.</p>
             </div>
           </div>
 
-          <article class="branch-detail-card" id="branchDetailPanel">
+          <div class="col-lg-6">
+            <article class="branch-detail-card h-100" id="branchDetailPanel">
             <div class="branch-detail-image-wrap">
               <img id="detailImage" src="" alt="Chi nhánh GIBOR" />
             </div>
@@ -146,7 +150,8 @@
                 ></iframe>
               </div>
             </div>
-          </article>
+            </article>
+          </div>
         </div>
       </section>
     </main>

@@ -61,19 +61,22 @@
 
     elements.branchEmpty.classList.add("hidden");
 
+    // Bọc mỗi card bằng .col để dùng Bootstrap row-cols responsive.
     const html = branches
       .map(
         (branch) => `
-          <article class="branch-card" data-branch-id="${branch.id}">
-            <img class="branch-card__img" src="${branch.image}" alt="${branch.name}" />
-            <div class="branch-card__body">
-              <h3 class="branch-card__name">${branch.name}</h3>
-              <p class="branch-card__address">
-                <i class="fa-solid fa-map-pin"></i> ${branch.address}
-              </p>
-              <p class="branch-card__desc">${branch.shortDescription}</p>
-            </div>
-          </article>
+          <div class="col">
+            <article class="branch-card h-100" data-branch-id="${branch.id}">
+              <img class="branch-card__img" src="${branch.image}" alt="${branch.name}" />
+              <div class="branch-card__body">
+                <h3 class="branch-card__name">${branch.name}</h3>
+                <p class="branch-card__address">
+                  <i class="fa-solid fa-map-pin"></i> ${branch.address}
+                </p>
+                <p class="branch-card__desc">${branch.shortDescription}</p>
+              </div>
+            </article>
+          </div>
         `,
       )
       .join("");
