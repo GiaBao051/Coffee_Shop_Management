@@ -1,4 +1,4 @@
-/* 
+/*
 ========================================================================================
 
                             CODE BỞI TRẦN DƯƠNG GIA BẢO
@@ -8,7 +8,10 @@
 
 // ===== ĐỌC GIỎ HÀNG TỪ LOCALSTORAGE =====
 function getCart() {
-  return JSON.parse(localStorage.getItem("giborCart") || "[]");
+  // Key chính là giborCart; giữ fallback cart cho dữ liệu cũ.
+  return JSON.parse(
+    localStorage.getItem("giborCart") || localStorage.getItem("cart") || "[]",
+  );
 }
 function saveCart(cart) {
   localStorage.setItem("giborCart", JSON.stringify(cart));
@@ -21,9 +24,17 @@ function formatPrice(p) {
 function updateCartCount() {
   const cart = getCart();
   const total = cart.reduce((s, i) => s + i.quantity, 0);
-  document
-    .querySelectorAll(".cart-count")
+
+  const cartCountEl = document.getElementById("cart-count");
+  if (cartCountEl) cartCountEl.textContent = total;
+
+  document.querySelectorAll(".cart-count, .icon-btn.cart span:last-child")
     .forEach((el) => (el.textContent = total));
+
+  // Đồng bộ badge giỏ hàng ở bottom nav mobile nếu mobile.js đã tạo.
+  if (typeof window.updateBottomNavBadge === "function") {
+    window.updateBottomNavBadge();
+  }
 }
 
 // ===== TOAST =====
@@ -808,6 +819,7 @@ async function placeOrder() {
 
   // Xóa giỏ hàng
   localStorage.removeItem("giborCart");
+  localStorage.removeItem("cart");
   updateCartCount();
 
   // Hiện popup thành công
@@ -1459,7 +1471,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/* 
+/*
 ========================================================================================
 
                             KẾT THÚC CODE BỞI TRẦN DƯƠNG GIA BẢO
@@ -1467,7 +1479,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================================================================================
 */
 
-/* 
+/*
 ========================================================================================
 
                             BẮT ĐẦU CODE BỞI TRẦN GIA BẢO
@@ -1588,7 +1600,7 @@ function updateQRCode() {
   qrImg.src = qrUrls[0];
 }
 
-/* 
+/*
 ========================================================================================
 
                             KẾT THÚC CODE BỞI TRẦN GIA BẢO
