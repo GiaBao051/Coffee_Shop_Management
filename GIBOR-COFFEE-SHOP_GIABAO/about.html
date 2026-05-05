@@ -12,6 +12,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="images/logo/logo.jpg" />
     <title>Giới thiệu về GIBOR COFFEE</title>
 
     <!-- THEME CHÍNH DÙNG CHUNG-->
@@ -31,13 +32,13 @@
     <!-- THEME ABOUT -->
     <link rel="stylesheet" href="css/about.css" />
     <!-- MOBILE RESPONSIVE -->
-    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/mobile-runtime.css" />
   </head>
   <body>
     <!-- HEADER DÙNG CHUNG -->
     <div id="header-placeholder"></div>
 
-    <main class="about-page">
+    <main class="about-page container-fluid px-0">
       <!-- Loading Screen -->
       <div class="logo" id="preloader">
         <div class="loader-icon">
@@ -47,7 +48,7 @@
       </div>
 
       <section class="about-modern-hero">
-        <div class="about-modern-hero__inner">
+        <div class="about-modern-hero__inner container px-3">
           <span class="about-badge">Since 2021</span>
           <h1>GIBOR COFFEE</h1>
           <p>
@@ -55,15 +56,17 @@
             bền vững, nơi mỗi tách cà phê đều có câu chuyện rõ ràng từ nông trại
             đến quầy phục vụ.
           </p>
-          <div class="about-hero-actions">
+          <div class="about-hero-actions d-flex justify-content-center gap-3 flex-wrap">
             <a href="menu.html" class="btn btn-primary">Khám phá menu</a>
             <a href="branches.html" class="btn btn-secondary">Các chi nhánh</a>
           </div>
         </div>
       </section>
 
-      <section class="about-overview">
-        <div class="about-overview__intro">
+      <section class="about-overview container-xl row g-4 align-items-stretch">
+        <!-- Bootstrap row giúp story 2 cột desktop, 1 cột mobile. -->
+        <div class="col-lg-8">
+          <div class="about-overview__intro h-100">
           <h2>Tổng Quan Về GIBOR</h2>
           <p>
             GIBOR COFFEE là thương hiệu tập trung vào cà phê rang mộc với tiêu
@@ -76,8 +79,10 @@
             bản và không ngừng cải tiến không gian phục vụ để trở thành lựa chọn
             đáng tin cậy cho cộng đồng yêu cà phê.
           </p>
+          </div>
         </div>
-        <div class="about-overview__stats">
+        <div class="col-lg-4">
+          <div class="about-overview__stats h-100 d-grid gap-3">
           <article class="about-stat-card">
             <h3>5+</h3>
             <p>Năm hoàn thiện chất lượng rang mộc</p>
@@ -90,10 +95,11 @@
             <h3>7:00 - 22:00</h3>
             <p>Khung giờ phục vụ liên tục mỗi ngày</p>
           </article>
+          </div>
         </div>
       </section>
 
-      <section class="about-highlights">
+      <section class="about-highlights container-xl">
         <div class="about-section-heading">
           <h2>Điểm Nổi Bật</h2>
           <p>
@@ -101,36 +107,44 @@
             dài hạn với khách hàng.
           </p>
         </div>
-        <div class="about-highlight-grid">
-          <article class="about-highlight-card">
+        <div class="about-highlight-grid row g-3">
+          <div class="col-md-6 col-lg-4">
+            <article class="about-highlight-card h-100">
             <i class="fas fa-mug-hot"></i>
             <h3>Hương vị ổn định</h3>
             <p>
               Công thức pha chế và tiêu chuẩn định lượng được kiểm soát đồng bộ
               tại mọi điểm phục vụ.
             </p>
-          </article>
-          <article class="about-highlight-card">
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="about-highlight-card h-100">
             <i class="fas fa-seedling"></i>
             <h3>Nguyên liệu có chọn lọc</h3>
             <p>
               Hạt cà phê được tuyển chọn từ vùng trồng uy tín, ưu tiên chất
               lượng thật thay vì xu hướng ngắn hạn.
             </p>
-          </article>
-          <article class="about-highlight-card">
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="about-highlight-card h-100">
             <i class="fas fa-people-group"></i>
             <h3>Đội ngũ tử tế</h3>
             <p>
               Nhân sự được đào tạo theo quy trình phục vụ chuyên nghiệp, thân
               thiện và nhất quán trải nghiệm.
             </p>
-          </article>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section class="about-values">
-        <div class="about-values__content">
+      <section class="about-values container-xl row g-4 align-items-stretch">
+        <!-- Bootstrap row giảm CSS grid custom cho phần giá trị. -->
+        <div class="col-lg-7">
+          <div class="about-values__content h-100">
           <h2>Giá Trị & Định Hướng</h2>
           <p>
             Chúng tôi tin rằng thương hiệu mạnh không đến từ sự ồn ào, mà đến từ
@@ -150,8 +164,10 @@
               với khách hàng và đội ngũ.
             </li>
           </ul>
+          </div>
         </div>
-        <div class="about-values__panel">
+        <div class="col-lg-5">
+          <div class="about-values__panel h-100">
           <h3>Định Hướng 2026 - 2028</h3>
           <ul>
             <li>Chuẩn hóa trải nghiệm đồng nhất trên toàn bộ chi nhánh.</li>
@@ -161,10 +177,11 @@
           <a href="branches.html" class="about-link-pill"
             >Xem hệ thống chi nhánh</a
           >
+          </div>
         </div>
       </section>
 
-      <section class="about-timeline-section">
+      <section class="about-timeline-section container-xl">
         <div class="about-section-heading">
           <h2>Hành Trình Phát Triển</h2>
           <p>
@@ -213,7 +230,7 @@
             Ghé thăm các chi nhánh để cảm nhận trọn vẹn không gian, chất lượng
             và phong cách phục vụ đặc trưng của GIBOR COFFEE.
           </p>
-          <div class="about-cta-actions">
+          <div class="about-cta-actions d-flex gap-3 flex-wrap">
             <a href="branches.html" class="btn btn-primary"
               >Xem các chi nhánh</a
             >

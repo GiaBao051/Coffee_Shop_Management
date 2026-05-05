@@ -109,12 +109,8 @@ body.dark .about-modern-hero {
 }
 
 .about-overview {
-  max-width: 1240px;
   margin: -52px auto 0;
-  padding: 0 22px 40px;
-  display: grid;
-  grid-template-columns: 1.45fr 1fr;
-  gap: 24px;
+  padding-bottom: 40px;
   position: relative;
   z-index: 2;
 }
@@ -147,8 +143,6 @@ body.dark .about-modern-hero {
 
 .about-overview__stats {
   padding: 18px;
-  display: grid;
-  gap: 12px;
 }
 
 .about-stat-card {
@@ -174,10 +168,7 @@ body.dark .about-modern-hero {
 .about-highlights,
 .about-values,
 .about-timeline-section {
-  max-width: 1240px;
   margin: 0 auto;
-  padding-left: 22px;
-  padding-right: 22px;
 }
 
 .about-highlights {
@@ -203,9 +194,8 @@ body.dark .about-modern-hero {
 }
 
 .about-highlight-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  /* Bootstrap row/col xử lý số cột, CSS chỉ giữ khoảng cách theo theme. */
+  margin-top: 0;
 }
 
 .about-highlight-card {
@@ -249,9 +239,6 @@ body.dark .about-modern-hero {
 .about-values {
   padding-top: 8px;
   padding-bottom: 30px;
-  display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
-  gap: 24px;
 }
 
 .about-values__content,
@@ -466,16 +453,14 @@ body.dark .about-modern-hero {
 
 .about-cta-actions {
   margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   max-width: 460px;
-  gap: 12px;
   align-items: stretch;
 }
 
 .about-cta-actions .btn {
   min-width: 0;
-  width: 100%;
+  width: auto;
+  flex: 1 1 180px;
   min-height: 46px;
   border-radius: 14px;
   display: inline-flex;
@@ -597,21 +582,16 @@ body.dark .about-cta-actions .btn-secondary:hover {
 }
 
 @media (max-width: 992px) {
-  .about-overview,
-  .about-values {
-    grid-template-columns: 1fr;
-  }
-
-  .about-highlight-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .about-values__panel {
     order: -1;
   }
 }
 
 @media (max-width: 768px) {
+  .about-page {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+
   .about-modern-hero {
     min-height: auto;
     padding: 90px 16px 62px;
@@ -627,17 +607,7 @@ body.dark .about-cta-actions .btn-secondary:hover {
   }
 
   .about-cta-actions {
-    grid-template-columns: 1fr;
     max-width: 100%;
-  }
-
-  .about-overview,
-  .about-highlights,
-  .about-values,
-  .about-timeline-section,
-  .about-cta {
-    padding-left: 16px;
-    padding-right: 16px;
   }
 
   .about-overview {
@@ -650,10 +620,6 @@ body.dark .about-cta-actions .btn-secondary:hover {
   .about-values__panel,
   .about-cta-box {
     padding: 24px 18px;
-  }
-
-  .about-highlight-grid {
-    grid-template-columns: 1fr;
   }
 
   .about-timeline::before {

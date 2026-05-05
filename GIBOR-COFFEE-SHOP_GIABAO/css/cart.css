@@ -798,6 +798,49 @@ body.dark .checkout-item-price {
     bottom: 15px;
     justify-content: center;
   }
+
+  /* Checkout mobile dùng bottom sheet riêng của trang giỏ hàng. */
+  .checkout-overlay .checkout-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    padding: 20px 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .checkout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .checkout-actions .btn-confirm,
+  .checkout-actions .btn-cancel {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    min-height: 48px;
+    cursor: pointer;
+  }
+
+  .checkout-actions .btn-confirm {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-weight: 700;
+  }
+
+  .checkout-actions .btn-cancel {
+    background: none;
+    border: 1.5px solid #ddd;
+    color: #666;
+  }
 }
 
 @media (max-width: 480px) {
