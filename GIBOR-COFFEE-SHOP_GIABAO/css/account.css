@@ -11,15 +11,17 @@
     radial-gradient(circle at 85% 0%, rgba(201, 160, 117, 0.2), transparent 30%),
     radial-gradient(circle at 0% 100%, rgba(120, 75, 45, 0.16), transparent 34%),
     #f7f3ee;
-  padding: 34px 20px 50px;
+  padding: clamp(28px, 4vw, 46px) 0 clamp(46px, 5vw, 72px);
 }
 
 .account-shell {
   width: min(1320px, 100%);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 22px;
+}
+
+.account-layout {
+  /* Bootstrap row chịu trách nhiệm chia cột account. */
+  margin-inline: 0;
 }
 
 .account-sidebar,
@@ -35,7 +37,6 @@
   position: sticky;
   top: 100px;
   height: fit-content;
-  width: 100%;
   margin: 10px 0 0;
 }
 
@@ -169,9 +170,8 @@
 }
 
 .form-grid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr 1fr;
+  --bs-gutter-x: 12px;
+  --bs-gutter-y: 12px;
 }
 
 .account-form label {
@@ -188,6 +188,7 @@
   border-radius: 10px;
   padding: 11px 12px;
   font-size: 0.95rem;
+  min-height: 44px;
 }
 
 .account-btn {
@@ -354,11 +355,7 @@ body.dark .order-empty {
   color: #d7cdbf;
 }
 
-@media (max-width: 900px) {
-  .account-shell {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 991px) {
   .account-sidebar {
     position: static;
   }
@@ -372,17 +369,19 @@ body.dark .order-empty {
   }
 }
 
+@media (max-width: 768px) {
+  .account-page {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+}
+
 @media (max-width: 640px) {
   .account-page {
-    padding: 20px 12px 90px;
+    padding: 20px 0 calc(92px + env(safe-area-inset-bottom));
   }
 
   .account-content {
     padding: 16px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
   }
 }
 /* 

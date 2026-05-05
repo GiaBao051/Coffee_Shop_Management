@@ -37,7 +37,7 @@
     <div id="header-placeholder"></div>
 
     <!-- ==================== NỘI DUNG TRANG ĐĂNG KÝ ==================== -->
-    <main class="login-page">
+    <main class="login-page auth-page container-fluid">
       <!-- Trần Gia Bảo bắt đầu chỉnh sửa -->
       <!-- Loading Screen -->
       <div class="logo" id="preloader">
@@ -50,14 +50,17 @@
       </div>
       <!-- Trần Gia Bảo kết thúc chỉnh sửa -->
 
-      <div class="login-container">
+      <!-- Bootstrap grid giúp form đăng ký gọn trên desktop và 1 cột trên mobile -->
+      <div class="auth-layout row justify-content-center w-100">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+          <div class="login-container card border-0 shadow-sm">
         <!-- ICON CÀ PHÊ TRANG TRÍ -->
         <div class="form-icon">
           <i class="fas fa-user-plus"></i>
         </div>
 
         <!-- TIÊU ĐỀ -->
-        <div class="form-top">
+        <div class="form-top text-center">
           <h1>Tạo Tài Khoản Mới</h1>
           <p class="form-subtitle">
             Đăng ký để nhận ưu đãi và đặt hàng nhanh hơn
@@ -65,16 +68,16 @@
         </div>
 
         <!-- FORM ĐĂNG KÝ -->
-        <form class="form-box" id="registerForm">
+        <form class="form-box d-grid gap-3" id="registerForm">
           <!-- Hàng: Họ + Tên (chia 2 cột) -->
           <div class="input-row">
             <!-- Ô nhập Họ -->
-            <div class="input-group">
+            <div class="auth-input-group input-group">
               <i class="fas fa-user input-icon"></i>
               <input
                 id="regLastName"
                 type="text"
-                class="input-field"
+                class="input-field form-control"
                 placeholder="Họ"
                 autocomplete="family-name"
                 required
@@ -82,12 +85,12 @@
             </div>
 
             <!-- Ô nhập Tên -->
-            <div class="input-group">
+            <div class="auth-input-group input-group">
               <i class="fas fa-user input-icon"></i>
               <input
                 id="regFirstName"
                 type="text"
-                class="input-field"
+                class="input-field form-control"
                 placeholder="Tên"
                 autocomplete="given-name"
                 required
@@ -96,12 +99,12 @@
           </div>
 
           <!-- Ô nhập Email -->
-          <div class="input-group">
+          <div class="auth-input-group input-group">
             <i class="fas fa-envelope input-icon"></i>
             <input
               id="regEmail"
               type="email"
-              class="input-field"
+              class="input-field form-control"
               placeholder="Nhập địa chỉ email"
               autocomplete="email"
               required
@@ -109,12 +112,12 @@
           </div>
 
           <!-- Ô nhập Số điện thoại -->
-          <div class="input-group">
+          <div class="auth-input-group input-group">
             <i class="fas fa-phone input-icon"></i>
             <input
               id="regPhone"
               type="tel"
-              class="input-field"
+              class="input-field form-control"
               placeholder="Nhập số điện thoại"
               autocomplete="tel"
               pattern="[0-9]{10,11}"
@@ -124,12 +127,12 @@
           </div>
 
           <!-- Ô nhập Mật khẩu -->
-          <div class="input-group">
+          <div class="auth-input-group input-group">
             <i class="fas fa-lock input-icon"></i>
             <input
               id="regPassword"
               type="password"
-              class="input-field"
+              class="input-field form-control"
               placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
               autocomplete="new-password"
               minlength="6"
@@ -146,7 +149,7 @@
           </div>
 
           <!-- Nút đăng ký -->
-          <button type="submit" class="form-button-submit">
+          <button type="submit" class="form-button-submit btn">
             <i class="fas fa-user-plus"></i> Đăng Ký
           </button>
         </form>
@@ -158,10 +161,10 @@
 
         <!-- ĐĂNG KÝ BẰNG MẠNG XÃ HỘI -->
         <div class="form-bottom">
-          <div class="form-social">
+          <div class="form-social d-flex gap-2">
             <button
               type="button"
-              class="form-button-social btn-google"
+              class="form-button-social btn btn-google"
               id="btnGoogleRegister"
             >
               <img src="images/logo/icons8-google-48.png" alt="Google" />
@@ -169,7 +172,7 @@
             </button>
             <button
               type="button"
-              class="form-button-social btn-github"
+              class="form-button-social btn btn-github"
               id="btnGithubRegister"
             >
               <img
@@ -181,11 +184,13 @@
           </div>
 
           <!-- LINK CHUYỂN SANG TRANG ĐĂNG NHẬP -->
-          <div class="form-down">
+          <div class="form-down text-center">
             <p>
               Đã có tài khoản?
               <a href="login.html" class="form-register">Đăng nhập</a>
             </p>
+          </div>
+        </div>
           </div>
         </div>
       </div>
